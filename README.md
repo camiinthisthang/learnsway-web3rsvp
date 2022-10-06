@@ -8,6 +8,8 @@ This platform is similar to Eventbrite or Luma. Users can create a new event and
 - Create a function in the smart contract to create a new event
 - Create a function in the smart contract to RSVP to an existing event
 
+![Screen Shot 2022-10-06 at 10 09 20 AM](https://user-images.githubusercontent.com/15346823/194375908-810ea03a-ba0e-4f21-8caa-b4aa2588aad3.png)
+
 Let's break down the tasks associated with each function:
 
 *In order to create a function to create a new event, the program will have to be able to handle the following:*
@@ -511,6 +513,8 @@ return (
 ```
 
 #### ✨⛽✨ Congrats you have completed your first DApp on Fuel ✨⛽✨
+
+![Screen Shot 2022-10-06 at 10 08 26 AM](https://user-images.githubusercontent.com/15346823/194375753-4c5de0cd-eaf3-4ba7-8e25-efe8e082fa93.png)
 
 Tweet me [@camiinthisthang](https://twitter.com/camiinthisthang) and let me know you just built a dapp on Fuel, you might get invited to a private group of builders, be invited to the next Fuel dinner, get alpha on the project, or something 👀.
 
