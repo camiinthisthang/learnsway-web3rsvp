@@ -1,5 +1,3 @@
-# learnsway-web3rsvp
-
 # Building on Fuel with Sway - Web3RSVP
 
 In this workshop, we'll build a fullstack dapp on Fuel. 
