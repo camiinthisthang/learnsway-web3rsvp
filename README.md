@@ -2,9 +2,9 @@
 
 # Building on Fuel with Sway - Web3RSVP
 
-In this workshop, we'll build a fullstack event creation and management platform on Fuel. 
+In this workshop, we'll build a fullstack dapp on Fuel. 
 
-This platform is similar to Eventbrite or Luma. Users can create a new event and RSVP to an existing event. This is the functionality we're going to build out in this workshop:
+This dapp is a bare-bones architectural reference for an event creation and management platform, similar to Eventbrite or Luma. Users can create a new event and RSVP to an existing event. This is the functionality we're going to build out in this workshop:
 - Create a function in the smart contract to create a new event
 - Create a function in the smart contract to RSVP to an existing event
 
