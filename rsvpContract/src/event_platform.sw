@@ -18,7 +18,7 @@ abi eventPlatform {
     fn rsvp(eventId: u64) -> Event;
 }
 
-// defining the struct here because it would be used by other developers who would be importing this ABI
+// structure is defined here to be used from other contracts when calling the ABI. 
 pub struct Event {
     uniqueId: u64,
     maxCapacity: u64, 
