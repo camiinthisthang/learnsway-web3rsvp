@@ -5,9 +5,9 @@ import "./App.css";
 // You can also do command + space and the compiler will suggest the correct name.
 import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
-const CONTRACT_ID = "0x9771f7845de02f65a4e8ffa18e89e7ca7a335fd31d396b543f0b094e3078d7b1";
+const CONTRACT_ID = "0xa384de96fc91d338c101f6c59844ca274493e8a880f8df4fb43d0125d175e7b4";
 //the private key from createWallet.js
-const WALLET_SECRET = "0x3d8abe4a5c8debf7036ddf5857a11df4ea2b99ba27d73407ac1df4d4c7c5c61b"
+const WALLET_SECRET = "0x147205e81ce5a1ff4e222617db3c1877c9bf04047bb7b1b0cfb809957230da55"
 // Create a Wallet from given secretKey in this case
 // The one we configured at the chainConfig.json
 const wallet = new Wallet(WALLET_SECRET, "https://node-beta-1.fuel.network/graphql");
