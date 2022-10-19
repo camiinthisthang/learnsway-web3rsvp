@@ -23,6 +23,7 @@ export default function App(){
   const [deposit, setDeposit] = useState(0)
   const [eventCreation, setEventCreation] = useState(false);
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
+  const [numOfRSVPs, setNumOfRSVPs] = useState(0);
 
 
   useEffect(() => {
@@ -52,11 +53,12 @@ export default function App(){
         //for each transaction you do, you'll need another variable output
         //for now, you have to set it manually, but the TS team is working on an issue to set this automatically
       }).txParams({gasPrice: 1, variableOutputs: 1}).call();
-      console.log("does it even make it here");
       console.log(transactionResult);
       console.log(transactionResponse);
       console.log("RSVP'd to the following event", value);
       console.log("deposit value", value.deposit.toString());
+      console.log("# of RSVPs", value.numOfRSVPs.toString());
+      setNumOfRSVPs(value.numOfRSVPs.toNumber());
       setEventName(value.name.toString());
       setEventId(value.uniqueId.toString());
       setMaxCap(value.maxCapacity.toNumber());
@@ -118,12 +120,14 @@ return (
     <h2> Event ID: {eventId}</h2>
     <h2>Max capacity: {maxCap}</h2>
     <h2>Deposit: {deposit}</h2>
+    <h2>Num of RSVPs: {numOfRSVPs}</h2>
     </>
     }
     </div> 
     <div>
     {rsvpConfirmed && <>
     <h1>RSVP Confirmed to the following event: {eventName}</h1>
+    <p>Num of RSVPs: {numOfRSVPs}</p>
     </>}
     </div>
   </div>
