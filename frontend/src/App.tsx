@@ -116,7 +116,7 @@ export default function App() {
         <form
           id="createEventForm"
           onSubmit={createEvent}
-          className="flex items-center gap-4 mb-4 justify-center"
+          className="flex flex-col md:flex-row md:items-center gap-4 mb-4 justify-center"
         >
           <input
             value={eventName}
