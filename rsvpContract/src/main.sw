@@ -21,7 +21,7 @@ storage {
 
 pub enum InvalidRSVPError {
     IncorrectAssetId: (),
-    NotEnoughTokens: u64,
+    NotEnoughTokens: (),
     InvalidEventID: (),
 }
 
@@ -45,8 +45,6 @@ impl eventPlatform for Contract{
        return selectedEvent;
     }
 
-
-
     #[storage(read, write)]
     fn rsvp(eventId: u64) -> Event {
     let sender = msg_sender().unwrap();
@@ -60,10 +58,9 @@ impl eventPlatform for Contract{
     // it is, revert
     require(selectedEvent.uniqueId < storage.event_id_counter, InvalidRSVPError::InvalidEventID);
  
-
     // check to see if the asset_id and amounts are correct, etc, if they aren't revert
     require(asset_id == BASE_ASSET_ID, InvalidRSVPError::IncorrectAssetId);
-    require(amount >= selectedEvent.deposit, InvalidRSVPError::NotEnoughTokens(amount));
+    require(amount >= selectedEvent.deposit, InvalidRSVPError::NotEnoughTokens);
     
     //send the payout
     transfer(selectedEvent.deposit, asset_id, selectedEvent.owner);

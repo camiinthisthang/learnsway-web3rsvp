@@ -5,7 +5,7 @@ import "./App.css";
 // You can also do command + space and the compiler will suggest the correct name.
 import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
-const CONTRACT_ID = "0xa384de96fc91d338c101f6c59844ca274493e8a880f8df4fb43d0125d175e7b4";
+const CONTRACT_ID = "0x01858dacd9e6f63baa695e7d40e94205edd2796bebab79df7de80dcfae140fe7";
 //the private key from createWallet.js
 const WALLET_SECRET = "0x147205e81ce5a1ff4e222617db3c1877c9bf04047bb7b1b0cfb809957230da55"
 // Create a Wallet from given secretKey in this case
@@ -24,6 +24,17 @@ export default function App(){
   const [eventCreation, setEventCreation] = useState(false);
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
 
+
+  useEffect(() => {
+    console.log('Wallet address', wallet.address.toString());
+    wallet.getBalances().then(balances => {
+      const balancesFormatted = balances.map(balance => {
+        return [balance.assetId, balance.amount.format()];
+      });
+      console.log('Wallet balances', balancesFormatted);
+    });
+  }, []);
+
   useEffect(() => {
     // Update the document title using the browser API
     console.log("eventName", eventName);
@@ -34,19 +45,30 @@ export default function App(){
   async function rsvpToEvent(){
     setLoading(true);
     try {
-      const { value } = await contract.functions.rsvp(eventId).txParams({gasPrice: 1}).call();
+      console.log('amount deposit', deposit);
+      const { value, transactionResponse, transactionResult } = await contract.functions.rsvp(eventId).callParams({
+        forward: [deposit]
+        //variable outputs is when a transaction creates a new dynamic UTXO
+        //for each transaction you do, you'll need another variable output
+        //for now, you have to set it manually, but the TS team is working on an issue to set this automatically
+      }).txParams({gasPrice: 1, variableOutputs: 1}).call();
+      console.log("does it even make it here");
+      console.log(transactionResult);
+      console.log(transactionResponse);
       console.log("RSVP'd to the following event", value);
       console.log("deposit value", value.deposit.toString());
       setEventName(value.name.toString());
       setEventId(value.uniqueId.toString());
       setMaxCap(value.maxCapacity.toNumber());
       setDeposit(value.deposit.toNumber());
+      //value.deposit.format()
       console.log("event name", value.name);
       console.log("event capacity", value.maxCapacity.toString());
       console.log("eventID", value.uniqueId.toString()) 
       setRSVPConfirmed(true);
       alert("rsvp successful")
     } catch (err: any) {
+      console.error(err);
       alert(err.message);
     } finally {
       setLoading(false)
