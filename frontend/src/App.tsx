@@ -99,19 +99,27 @@ export default function App(){
     }
   }
 return (
-  <div>
+  <div className="container">
+    <h1 className="logo">Learn Sway 🌴 Web3RSVP</h1>
+    <h2>Create Event</h2>
     <form id="createEventForm" onSubmit={createEvent}>
-    <input value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
-      <input value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
-      <input value = {deposit} onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
-      <button disabled={loading}>
-        {loading ? "creating..." : "create"}
-      </button>
+      <div>
+        <p>Enter Event Name</p>
+        <input value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Event Name" />
+        <p>Enter Max Capacity</p>
+        <input value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Max Capacity" />
+        <p>Enter Price</p>
+        <input value = {deposit} onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Price in ETH" />
+      </div>
+      <button disabled={loading} className="btn">
+          {loading ? "Creating..." : "Create"}
+        </button>
     </form>
     <div>
-      <input name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
-      <button onClick={rsvpToEvent}>RSVP</button>
+      <h2>RSVP to Event</h2>
+      <input name="eventId" onChange={e => setEventId(e.target.value)} placeholder="Enter in the event ID"/>
     </div>
+    <button onClick={rsvpToEvent} className="btn">RSVP</button>
     <div> 
     {eventCreation &&
     <>
