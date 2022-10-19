@@ -13,6 +13,55 @@
   }
 }
 
+.label {
+  grid-column: 1/2;
+  margin: 10px;
+}
+
+.input, .button {
+  grid-column: 2 / 3;
+  width: 250px;
+  margin: 10px;
+}
+
+.button {
+  color: white;
+  height: 30px;
+  background-color: black;
+}
+
+#createEventForm {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+
+}
+
+.header {
+  background-color: #00ff99;
+  font-size: 1.4rem;
+  height: 40px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.main {
+  background-color: black;
+  height: 100vh;
+  width: 100%;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.form {
+  margin-top: 5px;
+  display: grid;
+  border-radius: 15px;
+  background-color: #00ff99;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;

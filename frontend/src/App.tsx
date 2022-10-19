@@ -66,7 +66,7 @@ export default function App(){
       //value.deposit.format()
       console.log("event name", value.name);
       console.log("event capacity", value.maxCapacity.toString());
-      console.log("eventID", value.uniqueId.toString()) 
+      console.log("eventID", value.uniqueId.toString())
       setRSVPConfirmed(true);
       alert("rsvp successful")
     } catch (err: any) {
@@ -100,36 +100,48 @@ export default function App(){
   }
 return (
   <div>
-    <form id="createEventForm" onSubmit={createEvent}>
-    <input value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
-      <input value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
-      <input value = {deposit} onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
-      <button disabled={loading}>
-        {loading ? "creating..." : "create"}
-      </button>
-    </form>
-    <div>
-      <input name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
-      <button onClick={rsvpToEvent}>RSVP</button>
-    </div>
-    <div> 
-    {eventCreation &&
-    <>
-    <h1> New event created</h1>
-    <h2> Event Name: {eventName} </h2>
-    <h2> Event ID: {eventId}</h2>
-    <h2>Max capacity: {maxCap}</h2>
-    <h2>Deposit: {deposit}</h2>
-    <h2>Num of RSVPs: {numOfRSVPs}</h2>
-    </>
-    }
-    </div> 
-    <div>
-    {rsvpConfirmed && <>
-    <h1>RSVP Confirmed to the following event: {eventName}</h1>
-    <p>Num of RSVPs: {numOfRSVPs}</p>
-    </>}
+    <div className="header">Building on Fuel with Sway - Web3RSVP</div>
+    <div className="main">
+
+      <div className="form">
+        <h1>Create Your Event Today!</h1>
+        <form id="createEventForm" onSubmit={createEvent}>
+          <label className="label">Event Name</label>
+          <input className="input" value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
+          <label className="label">Max Cap</label>
+          <input className="input" value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
+          <label className="label">Deposit</label>
+          <input className="input" value = {deposit} onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
+          <button className="button" disabled={loading}>
+            {loading ? "creating..." : "create"}
+          </button>
+        </form>
+        <div>
+          <label className="label">Event Id</label>
+          <input className="input" name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
+          <button className="button" onClick={rsvpToEvent}>RSVP</button>
+        </div>
+      </div>
+      <div className="event">
+      {eventCreation &&
+      <>
+      <h1> New event created</h1>
+      <h2> Event Name: {eventName} </h2>
+      <h2> Event ID: {eventId}</h2>
+      <h2>Max capacity: {maxCap}</h2>
+      <h2>Deposit: {deposit}</h2>
+      <h2>Num of RSVPs: {numOfRSVPs}</h2>
+      </>
+      }
+      </div>
+      <div>
+      {rsvpConfirmed && <>
+      <h1>RSVP Confirmed to the following event: {eventName}</h1>
+      <p>Num of RSVPs: {numOfRSVPs}</p>
+      </>}
+      </div>
     </div>
   </div>
+
 );
 }
