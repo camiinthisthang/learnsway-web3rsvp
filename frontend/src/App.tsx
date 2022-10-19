@@ -43,7 +43,8 @@ export default function App(){
     console.log("max cap", maxCap);
   },[eventName, maxCap, deposit]);
 
-  async function rsvpToEvent(){
+  async function rsvpToEvent(e: any){
+    e.preventDefault()
     setLoading(true);
     try {
       console.log('amount deposit', deposit);
@@ -66,7 +67,7 @@ export default function App(){
       //value.deposit.format()
       console.log("event name", value.name);
       console.log("event capacity", value.maxCapacity.toString());
-      console.log("eventID", value.uniqueId.toString()) 
+      console.log("eventID", value.uniqueId.toString())
       setRSVPConfirmed(true);
       alert("rsvp successful")
     } catch (err: any) {
@@ -101,29 +102,36 @@ export default function App(){
 return (
   <div>
     <form id="createEventForm" onSubmit={createEvent}>
-    <input value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
+      <input value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
       <input value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
       <input value = {deposit} onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
       <button disabled={loading}>
-        {loading ? "creating..." : "create"}
+        {loading ? "Creating..." : "Create"}
       </button>
     </form>
+    <form onSubmit={rsvpToEvent}>
+      <input name="eventId" onChange={e => setEventId(e.target.value)} placeholder="Pass in the eventID"/>
+      <button>RSVP</button>
+    </form>
     <div>
-      <input name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
-      <button onClick={rsvpToEvent}>RSVP</button>
-    </div>
-    <div> 
     {eventCreation &&
     <>
     <h1> New event created</h1>
-    <h2> Event Name: {eventName} </h2>
-    <h2> Event ID: {eventId}</h2>
-    <h2>Max capacity: {maxCap}</h2>
-    <h2>Deposit: {deposit}</h2>
-    <h2>Num of RSVPs: {numOfRSVPs}</h2>
+    <div className="result-grid">
+      <div className="result-label">Event Name:</div>
+      <div className="result-value">{eventName}</div>
+      <div className="result-label"> Event ID:</div>
+      <div className="result-value">{eventId}</div>
+      <div className="result-label">Max capacity:</div>
+      <div className="result-value">{maxCap}</div>
+      <div className="result-label">Deposit:</div>
+      <div className="result-value">{deposit}</div>
+      <div className="result-label">Num of RSVPs:</div>
+      <div className="result-value">{numOfRSVPs}</div>
+    </div>
     </>
     }
-    </div> 
+    </div>
     <div>
     {rsvpConfirmed && <>
     <h1>RSVP Confirmed to the following event: {eventName}</h1>
