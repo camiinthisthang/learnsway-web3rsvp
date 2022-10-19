@@ -5,9 +5,9 @@ import "./App.css";
 // You can also do command + space and the compiler will suggest the correct name.
 import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
-const CONTRACT_ID = "0x9771f7845de02f65a4e8ffa18e89e7ca7a335fd31d396b543f0b094e3078d7b1";
+const CONTRACT_ID = "0x01858dacd9e6f63baa695e7d40e94205edd2796bebab79df7de80dcfae140fe7";
 //the private key from createWallet.js
-const WALLET_SECRET = "0x3d8abe4a5c8debf7036ddf5857a11df4ea2b99ba27d73407ac1df4d4c7c5c61b"
+const WALLET_SECRET = "0x147205e81ce5a1ff4e222617db3c1877c9bf04047bb7b1b0cfb809957230da55"
 // Create a Wallet from given secretKey in this case
 // The one we configured at the chainConfig.json
 const wallet = new Wallet(WALLET_SECRET, "https://node-beta-1.fuel.network/graphql");
@@ -23,6 +23,18 @@ export default function App(){
   const [deposit, setDeposit] = useState(0)
   const [eventCreation, setEventCreation] = useState(false);
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
+  const [numOfRSVPs, setNumOfRSVPs] = useState(0);
+
+
+  useEffect(() => {
+    console.log('Wallet address', wallet.address.toString());
+    wallet.getBalances().then(balances => {
+      const balancesFormatted = balances.map(balance => {
+        return [balance.assetId, balance.amount.format()];
+      });
+      console.log('Wallet balances', balancesFormatted);
+    });
+  }, []);
 
   useEffect(() => {
     // Update the document title using the browser API
@@ -34,19 +46,31 @@ export default function App(){
   async function rsvpToEvent(){
     setLoading(true);
     try {
-      const { value } = await contract.functions.rsvp(eventId).txParams({gasPrice: 1}).call();
+      console.log('amount deposit', deposit);
+      const { value, transactionResponse, transactionResult } = await contract.functions.rsvp(eventId).callParams({
+        forward: [deposit]
+        //variable outputs is when a transaction creates a new dynamic UTXO
+        //for each transaction you do, you'll need another variable output
+        //for now, you have to set it manually, but the TS team is working on an issue to set this automatically
+      }).txParams({gasPrice: 1, variableOutputs: 1}).call();
+      console.log(transactionResult);
+      console.log(transactionResponse);
       console.log("RSVP'd to the following event", value);
       console.log("deposit value", value.deposit.toString());
+      console.log("# of RSVPs", value.numOfRSVPs.toString());
+      setNumOfRSVPs(value.numOfRSVPs.toNumber());
       setEventName(value.name.toString());
       setEventId(value.uniqueId.toString());
       setMaxCap(value.maxCapacity.toNumber());
       setDeposit(value.deposit.toNumber());
+      //value.deposit.format()
       console.log("event name", value.name);
       console.log("event capacity", value.maxCapacity.toString());
       console.log("eventID", value.uniqueId.toString()) 
       setRSVPConfirmed(true);
       alert("rsvp successful")
     } catch (err: any) {
+      console.error(err);
       alert(err.message);
     } finally {
       setLoading(false)
@@ -96,12 +120,14 @@ return (
     <h2> Event ID: {eventId}</h2>
     <h2>Max capacity: {maxCap}</h2>
     <h2>Deposit: {deposit}</h2>
+    <h2>Num of RSVPs: {numOfRSVPs}</h2>
     </>
     }
     </div> 
     <div>
     {rsvpConfirmed && <>
     <h1>RSVP Confirmed to the following event: {eventName}</h1>
+    <p>Num of RSVPs: {numOfRSVPs}</p>
     </>}
     </div>
   </div>

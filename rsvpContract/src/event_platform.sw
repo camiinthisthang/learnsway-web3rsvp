@@ -1,8 +1,3 @@
-//creating a new event, and setting the details 
-//a user rsvping for an event
-
-//
-
 library event_platform;
 
 use std::{
@@ -25,5 +20,6 @@ pub struct Event {
     deposit: u64, 
     owner: Identity,
     name: str[10],
-    numOfRSVPs: u64
+    numOfRSVPs: u64,
 }
+
