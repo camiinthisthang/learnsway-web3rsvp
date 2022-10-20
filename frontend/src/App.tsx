@@ -99,37 +99,42 @@ export default function App(){
     }
   }
 return (
-  <div>
-    <form id="createEventForm" onSubmit={createEvent}>
-    <input value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
-      <input value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
-      <input value = {deposit} onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
-      <button disabled={loading}>
-        {loading ? "creating..." : "create"}
-      </button>
-    </form>
-    <div>
-      <input name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
-      <button onClick={rsvpToEvent}>RSVP</button>
-    </div>
-    <div> 
-    {eventCreation &&
-    <>
-    <h1> New event created</h1>
-    <h2> Event Name: {eventName} </h2>
-    <h2> Event ID: {eventId}</h2>
-    <h2>Max capacity: {maxCap}</h2>
-    <h2>Deposit: {deposit}</h2>
-    <h2>Num of RSVPs: {numOfRSVPs}</h2>
-    </>
-    }
-    </div> 
-    <div>
-    {rsvpConfirmed && <>
-    <h1>RSVP Confirmed to the following event: {eventName}</h1>
-    <p>Num of RSVPs: {numOfRSVPs}</p>
-    </>}
+  <div className="App">
+      <div className="form_style">
+      <form id="createEventForm" className="createEventForm_style" onSubmit={createEvent}>
+        <div className="createEventForm_inputs">
+          <input value = {eventName} className="form_input"  onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
+          <input value = {maxCap} className="form_input" onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
+          <input value = {deposit} className="form_input" onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
+        </div>
+        <button className="form_button" role="button" disabled={loading}>
+          {loading ? "Creating..." : "Create"}
+        </button>
+      </form>
+      <div className="form_eventid">
+        <input name="eventId" className="form_input input_eventid" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
+        <button className="form_button" role="button" onClick={rsvpToEvent}>RSVP</button>
+      </div>
+      <div> 
+      {eventCreation &&
+      <div className="event_style">
+      <h1> New Event Created</h1>
+      <h2> Event Name: {eventName} </h2>
+      <h2> Event ID: {eventId}</h2>
+      <h2>Max capacity: {maxCap}</h2>
+      <h2>Deposit: {deposit}</h2>
+      <h2>Num of RSVPs: {numOfRSVPs}</h2>
+      </div>
+      }
+      </div> 
+      <div className="event_rsvpconfirmed">
+      {rsvpConfirmed && <>
+      <h1>RSVP Confirmed to the following event: {eventName}</h1>
+      <h2>Num of RSVPs: {numOfRSVPs}</h2>
+      </>}
+      </div>
     </div>
   </div>
+  
 );
 }

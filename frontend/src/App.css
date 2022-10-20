@@ -1,38 +1,177 @@
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  /* display: flex;
+  justify-content: center;
+  align-items: center; */
+  background: radial-gradient(circle, rgba(122,23,152,1) 0%, rgba(101,18,195,1) 100%);
+}
+
 .App {
-  text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
+  font-family: 'Roboto', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   min-height: 100vh;
+  height: auto;
+}
+
+.createEventForm_style {
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  align-items: center;
+  padding-bottom: 10px;
+  padding-top: 1.5rem;
 }
 
-.App-link {
-  color: #61dafb;
+.createEventForm_inputs {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1.5rem;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
+.form_style {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  padding: 10px;
+  width: 50vw;
+}
+
+.form_input {
+  font-family: 'Roboto', sans-serif;
+  color: #333;
+  font-size: 1rem;
+	margin: 0 5px;
+  padding: 1rem 0.8rem;
+  border-radius: 0.2rem;
+  background-color: rgb(255, 255, 255);
+  border: none;
+  width: 90%;
+  display: block;
+  border-bottom: 0.3rem solid transparent;
+  transition: all 0.3s;
+}
+
+/* CSS */
+.form_button {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1rem;
+  padding: 0.6em 2em;
+  border: none;
+  outline: none;
+  color: rgb(255, 255, 255);
+  background: #111;
+  cursor: pointer;
+  position: relative;
+  z-index: 0;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.form_button:before {
+  content: "";
+  background: linear-gradient(
+    45deg,
+    #ff0000,
+    #ff7300,
+    #fffb00,
+    #48ff00,
+    #00ffd5,
+    #002bff,
+    #7a00ff,
+    #ff00c8,
+    #ff0000
+  );
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  background-size: 400%;
+  z-index: -1;
+  filter: blur(5px);
+  -webkit-filter: blur(5px);
+  width: calc(100% + 4px);
+  height: calc(100% + 4px);
+  animation: glowing-button-85 20s linear infinite;
+  transition: opacity 0.3s ease-in-out;
+  border-radius: 10px;
+}
+
+@keyframes glowing-button-85 {
+  0% {
+    background-position: 0 0;
   }
-  to {
-    transform: rotate(360deg);
+  50% {
+    background-position: 400% 0;
   }
+  100% {
+    background-position: 0 0;
+  }
+}
+
+.form_button:after {
+  z-index: -1;
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: #222;
+  left: 0;
+  top: 0;
+  border-radius: 10px;
+}
+
+.form_eventid {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding-bottom:1.5rem;
+}
+
+.input_eventid {
+  width: 30%;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.event_style {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  padding-bottom: 1rem;
+  padding-left: 2rem;
+}
+
+.event_style > h1,
+.event_rsvpconfirmed > h1 {
+  color: rgb(235, 235, 235);
+  padding-bottom: 10px;
+  font-size: 2rem;
+}
+
+.event_style > h2,
+.event_rsvpconfirmed > h2 {
+  color: rgb(203, 203, 203);
+}
+
+.event_rsvpconfirmed {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  flex-direction: column;
+  padding-left: 2rem;
+}
+
+.event_rsvpconfirmed > h1,
+.event_rsvpconfirmed > h2 {
+  padding-bottom: 0.7rem;
 }
