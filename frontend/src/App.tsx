@@ -18,9 +18,9 @@ const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
 export default function App(){
   const [loading, setLoading] = useState(false);
   const [eventId, setEventId] = useState('');
-  const [eventName, setEventName] = useState('')
-  const [maxCap, setMaxCap] = useState(0)
-  const [deposit, setDeposit] = useState(0)
+  const [eventName, setEventName] = useState('');
+  const [maxCap, setMaxCap] = useState(0);
+  const [deposit, setDeposit] = useState(0);
   const [eventCreation, setEventCreation] = useState(false);
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
   const [numOfRSVPs, setNumOfRSVPs] = useState(0);
@@ -102,7 +102,6 @@ return (
   <div>
     <div className="header">Building on Fuel with Sway - Web3RSVP</div>
     <div className="main">
-
       <div className="form">
         <h1>Create Your Event Today!</h1>
         <form id="createEventForm" onSubmit={createEvent}>
@@ -134,7 +133,7 @@ return (
       </>
       }
       </div>
-      <div>
+      <div className="rsvp">
       {rsvpConfirmed && <>
       <h1>RSVP Confirmed to the following event: {eventName}</h1>
       <p>Num of RSVPs: {numOfRSVPs}</p>
