@@ -99,11 +99,10 @@ export default function App(){
     }
   }
 return (
-  <div>
+  <div className="main">
     <div className="header">Building on Fuel with Sway - Web3RSVP</div>
-    <div className="main">
       <div className="form">
-        <h1>Create Your Event Today!</h1>
+        <h2>Create Your Event Today!</h2>
         <form id="createEventForm" onSubmit={createEvent}>
           <label className="label">Event Name</label>
           <input className="input" value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
@@ -115,31 +114,33 @@ return (
             {loading ? "creating..." : "create"}
           </button>
         </form>
-        <div>
-          <label className="label">Event Id</label>
-          <input className="input" name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
-          <button className="button" onClick={rsvpToEvent}>RSVP</button>
+      </div>
+      <div className="form">
+        <h2>RSVP to an Event</h2>
+        <label className="label">Event Id</label>
+        <input className="input" name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
+        <button className="button" onClick={rsvpToEvent}>RSVP</button>
+      </div>
+      <div className="results">
+        <div className="card">
+          {eventCreation &&
+          <>
+          <h1> New event created</h1>
+          <h2> Event Name: {eventName} </h2>
+          <h2> Event ID: {eventId}</h2>
+          <h2>Max capacity: {maxCap}</h2>
+          <h2>Deposit: {deposit}</h2>
+          <h2>Num of RSVPs: {numOfRSVPs}</h2>
+          </>
+          }
         </div>
+          {rsvpConfirmed && <>
+          <div className="card">
+            <h1>RSVP Confirmed to the following event: {eventName}</h1>
+            <p>Num of RSVPs: {numOfRSVPs}</p>
+          </div>
+          </>}
       </div>
-      <div className="event">
-      {eventCreation &&
-      <>
-      <h1> New event created</h1>
-      <h2> Event Name: {eventName} </h2>
-      <h2> Event ID: {eventId}</h2>
-      <h2>Max capacity: {maxCap}</h2>
-      <h2>Deposit: {deposit}</h2>
-      <h2>Num of RSVPs: {numOfRSVPs}</h2>
-      </>
-      }
-      </div>
-      <div className="rsvp">
-      {rsvpConfirmed && <>
-      <h1>RSVP Confirmed to the following event: {eventName}</h1>
-      <p>Num of RSVPs: {numOfRSVPs}</p>
-      </>}
-      </div>
-    </div>
   </div>
 
 );

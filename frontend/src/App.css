@@ -46,21 +46,36 @@
 }
 
 .main {
-  color: white;
+  color: black;
   background-color: black;
   height: 100vh;
-  width: 100%;
-  display: flex;
+  display: block;
+  text-align: center;
+  overflow: scroll;
+}
+
+.form {
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 50%;
+  display: grid;
+  border-radius: 15px;
+  background-color: #00ff99;
   text-align: center;
   justify-content: center;
   align-items: center;
 }
 
-.form {
-  margin-top: 5px;
-  display: grid;
+.card {
   border-radius: 15px;
   background-color: #00ff99;
+  width: 50%;
+  margin: 15px;
+}
+
+.results {
+  display: flex;
 }
 
 .App-header {
@@ -70,7 +85,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(8px + 2vmin);
   color: white;
 }
 
