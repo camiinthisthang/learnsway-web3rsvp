@@ -25,7 +25,6 @@ export default function App(){
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
   const [numOfRSVPs, setNumOfRSVPs] = useState(0);
 
-
   useEffect(() => {
     console.log('Wallet address', wallet.address.toString());
     wallet.getBalances().then(balances => {
