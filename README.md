@@ -6,7 +6,7 @@ This dapp is a bare-bones architectural reference for an event creation and mana
 - Create a function in the smart contract to create a new event
 - Create a function in the smart contract to RSVP to an existing event
 
-![Screen Shot 2022-10-06 at 10 09 20 AM](https://user-images.githubusercontent.com/15346823/194375908-810ea03a-ba0e-4f21-8caa-b4aa2588aad3.png)
+![screenshot](https://user-images.githubusercontent.com/25227327/197104877-a6bbe2e3-6651-4915-9ee0-e6ba6c2450ca.jpeg)
 
 Let's break down the tasks associated with each function:
 
