@@ -13,6 +13,71 @@
   }
 }
 
+.label {
+  grid-column: 1/2;
+  margin: 10px;
+}
+
+.input, .button {
+  grid-column: 2 / 3;
+  width: 250px;
+  margin: 10px;
+}
+
+.button {
+  color: white;
+  height: 30px;
+  background-color: black;
+}
+
+#createEventForm {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+
+}
+
+.header {
+  background-color: #00ff99;
+  font-size: 1.4rem;
+  height: 40px;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.main {
+  color: black;
+  background-color: black;
+  height: 100vh;
+  display: block;
+  text-align: center;
+  overflow: scroll;
+}
+
+.form {
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  width: 50%;
+  display: grid;
+  border-radius: 15px;
+  background-color: #00ff99;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  border-radius: 15px;
+  background-color: #00ff99;
+  width: 50%;
+  margin: 15px;
+}
+
+.results {
+  display: flex;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -20,7 +85,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
+  font-size: calc(8px + 2vmin);
   color: white;
 }
 

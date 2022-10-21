@@ -18,9 +18,9 @@ const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
 export default function App(){
   const [loading, setLoading] = useState(false);
   const [eventId, setEventId] = useState('');
-  const [eventName, setEventName] = useState('')
-  const [maxCap, setMaxCap] = useState(0)
-  const [deposit, setDeposit] = useState(0)
+  const [eventName, setEventName] = useState('');
+  const [maxCap, setMaxCap] = useState(0);
+  const [deposit, setDeposit] = useState(0);
   const [eventCreation, setEventCreation] = useState(false);
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
   const [numOfRSVPs, setNumOfRSVPs] = useState(0);
@@ -66,7 +66,7 @@ export default function App(){
       //value.deposit.format()
       console.log("event name", value.name);
       console.log("event capacity", value.maxCapacity.toString());
-      console.log("eventID", value.uniqueId.toString()) 
+      console.log("eventID", value.uniqueId.toString())
       setRSVPConfirmed(true);
       alert("rsvp successful")
     } catch (err: any) {
@@ -99,37 +99,49 @@ export default function App(){
     }
   }
 return (
-  <div>
-    <form id="createEventForm" onSubmit={createEvent}>
-    <input value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
-      <input value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
-      <input value = {deposit} onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
-      <button disabled={loading}>
-        {loading ? "creating..." : "create"}
-      </button>
-    </form>
-    <div>
-      <input name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
-      <button onClick={rsvpToEvent}>RSVP</button>
-    </div>
-    <div> 
-    {eventCreation &&
-    <>
-    <h1> New event created</h1>
-    <h2> Event Name: {eventName} </h2>
-    <h2> Event ID: {eventId}</h2>
-    <h2>Max capacity: {maxCap}</h2>
-    <h2>Deposit: {deposit}</h2>
-    <h2>Num of RSVPs: {numOfRSVPs}</h2>
-    </>
-    }
-    </div> 
-    <div>
-    {rsvpConfirmed && <>
-    <h1>RSVP Confirmed to the following event: {eventName}</h1>
-    <p>Num of RSVPs: {numOfRSVPs}</p>
-    </>}
-    </div>
+  <div className="main">
+    <div className="header">Building on Fuel with Sway - Web3RSVP</div>
+      <div className="form">
+        <h2>Create Your Event Today!</h2>
+        <form id="createEventForm" onSubmit={createEvent}>
+          <label className="label">Event Name</label>
+          <input className="input" value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
+          <label className="label">Max Cap</label>
+          <input className="input" value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
+          <label className="label">Deposit</label>
+          <input className="input" value = {deposit} onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
+          <button className="button" disabled={loading}>
+            {loading ? "creating..." : "create"}
+          </button>
+        </form>
+      </div>
+      <div className="form">
+        <h2>RSVP to an Event</h2>
+        <label className="label">Event Id</label>
+        <input className="input" name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
+        <button className="button" onClick={rsvpToEvent}>RSVP</button>
+      </div>
+      <div className="results">
+        <div className="card">
+          {eventCreation &&
+          <>
+          <h1> New event created</h1>
+          <h2> Event Name: {eventName} </h2>
+          <h2> Event ID: {eventId}</h2>
+          <h2>Max capacity: {maxCap}</h2>
+          <h2>Deposit: {deposit}</h2>
+          <h2>Num of RSVPs: {numOfRSVPs}</h2>
+          </>
+          }
+        </div>
+          {rsvpConfirmed && <>
+          <div className="card">
+            <h1>RSVP Confirmed to the following event: {eventName}</h1>
+            <p>Num of RSVPs: {numOfRSVPs}</p>
+          </div>
+          </>}
+      </div>
   </div>
+
 );
 }
