@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Wallet } from "fuels";
 import "./App.css";
-import Container from "./components/container";
+import Header from "./components/header";
 // Import the contract factory -- you can find the name in index.ts.
 // You can also do command + space and the compiler will suggest the correct name.
 import { RsvpContractAbi__factory } from "./contracts";
@@ -101,6 +101,7 @@ export default function App(){
   }
 return (
     <div>
+      <Header/>
     <form id="createEventForm" onSubmit={createEvent}>
     <input value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
       <input value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
