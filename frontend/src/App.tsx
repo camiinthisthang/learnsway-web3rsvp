@@ -5,9 +5,9 @@ import "./App.css";
 // You can also do command + space and the compiler will suggest the correct name.
 import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
-const CONTRACT_ID = "0x01858dacd9e6f63baa695e7d40e94205edd2796bebab79df7de80dcfae140fe7";
+const CONTRACT_ID = "0x4098402a7539ed2326655ab8b0b0abb71dee38f9bfef2b8c7ca0661fdad4697c";
 //the private key from createWallet.js
-const WALLET_SECRET = "0x147205e81ce5a1ff4e222617db3c1877c9bf04047bb7b1b0cfb809957230da55"
+const WALLET_SECRET = "0x5ac6d72b42e6a558e50458956244185267976a0d602d8be50e3b60ade7e22b65"
 // Create a Wallet from given secretKey in this case
 // The one we configured at the chainConfig.json
 const wallet = new Wallet(WALLET_SECRET, "https://node-beta-1.fuel.network/graphql");
@@ -24,6 +24,11 @@ export default function App(){
   const [eventCreation, setEventCreation] = useState(false);
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
   const [numOfRSVPs, setNumOfRSVPs] = useState(0);
+  const [newEventName, setNewEventName] = useState('');
+  const [newEventMax, setNewEventMax] = useState('');
+  const [newEventDeposit, setNewEventDeposit] = useState('');
+
+
 
 
   useEffect(() => {
@@ -37,7 +42,6 @@ export default function App(){
   }, []);
 
   useEffect(() => {
-    // Update the document title using the browser API
     console.log("eventName", eventName);
     console.log("deposit", deposit);
     console.log("max cap", maxCap);
