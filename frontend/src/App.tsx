@@ -5,7 +5,7 @@ import "./App.css";
 // You can also do command + space and the compiler will suggest the correct name.
 import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
-const CONTRACT_ID = "0x4098402a7539ed2326655ab8b0b0abb71dee38f9bfef2b8c7ca0661fdad4697c";
+const CONTRACT_ID = "0x32f10d6f296fbd07e16f24867a11aab9d979ad95f54b223efc0d5532360ef5e4";
 //the private key from createWallet.js
 const WALLET_SECRET = "0x5ac6d72b42e6a558e50458956244185267976a0d602d8be50e3b60ade7e22b65"
 // Create a Wallet from given secretKey in this case
@@ -17,16 +17,22 @@ const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
 
 export default function App(){
   const [loading, setLoading] = useState(false);
-  const [eventId, setEventId] = useState('');
+  //-----------------------------------------------//
+  //state variables to capture the selection of an existing event to RSVP to
   const [eventName, setEventName] = useState('');
   const [maxCap, setMaxCap] = useState(0);
   const [deposit, setDeposit] = useState(0);
   const [eventCreation, setEventCreation] = useState(false);
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
   const [numOfRSVPs, setNumOfRSVPs] = useState(0);
+  const [eventId, setEventId] = useState('');
+  //-------------------------------------------------//
+  //state variables to capture the creation of an event
   const [newEventName, setNewEventName] = useState('');
-  const [newEventMax, setNewEventMax] = useState('');
-  const [newEventDeposit, setNewEventDeposit] = useState('');
+  const [newEventMax, setNewEventMax] = useState(0);
+  const [newEventDeposit, setNewEventDeposit] = useState(0);
+  const [newEventID, setNewEventID] = useState('')
+  const [newEventRSVP, setNewEventRSVP] = useState(0);
 
 
 
@@ -86,14 +92,15 @@ export default function App(){
     setLoading(true);
     try {
       console.log("creating event")
-      const { value } = await contract.functions.create_event(maxCap, deposit, eventName).txParams({gasPrice: 1}).call();
+      const { value } = await contract.functions.create_event(newEventMax, newEventDeposit, newEventName).txParams({gasPrice: 1}).call();
 
       console.log("return of create event", value);
       console.log("deposit value", value.deposit.toString());
       console.log("event name", value.name);
       console.log("event capacity", value.maxCapacity.toString());
       console.log("eventID", value.uniqueId.toString())
-      setEventId(value.uniqueId.toString())
+      setNewEventID(value.uniqueId.toString())
+      //setEventId(value.uniqueId.toString())
       setEventCreation(true);
       alert('Event created');
     } catch (err: any) {
@@ -109,11 +116,11 @@ return (
         <h2>Create Your Event Today!</h2>
         <form id="createEventForm" onSubmit={createEvent}>
           <label className="label">Event Name</label>
-          <input className="input" value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
+          <input className="input" value = {newEventName} onChange={e => setNewEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
           <label className="label">Max Cap</label>
-          <input className="input" value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
+          <input className="input" value = {newEventMax} onChange={e => setNewEventMax(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
           <label className="label">Deposit</label>
-          <input className="input" value = {deposit} onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
+          <input className="input" value = {newEventDeposit} onChange={e => setNewEventDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
           <button className="button" disabled={loading}>
             {loading ? "creating..." : "create"}
           </button>
@@ -130,11 +137,11 @@ return (
           {eventCreation &&
           <>
           <h1> New event created</h1>
-          <h2> Event Name: {eventName} </h2>
-          <h2> Event ID: {eventId}</h2>
-          <h2>Max capacity: {maxCap}</h2>
-          <h2>Deposit: {deposit}</h2>
-          <h2>Num of RSVPs: {numOfRSVPs}</h2>
+          <h2> Event Name: {newEventName} </h2>
+          <h2> Event ID: {newEventID}</h2>
+          <h2>Max capacity: {newEventMax}</h2>
+          <h2>Deposit: {newEventDeposit}</h2>
+          <h2>Num of RSVPs: {newEventRSVP}</h2>
           </>
           }
         </div>

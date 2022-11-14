@@ -64,12 +64,12 @@ impl eventPlatform for Contract {
     // check to see if the eventId is greater than storage.event_id_counter, if
     // it is, revert
         require(selectedEvent.uniqueId < storage.event_id_counter, InvalidRSVPError::InvalidEventID);
-        __log(0);
+        // log(0);
     // check to see if the asset_id and amounts are correct, etc, if they aren't revert
         require(asset_id == BASE_ASSET_ID, InvalidRSVPError::IncorrectAssetId);
-        __log(1);
+        // log(1);
         require(amount >= selectedEvent.deposit, InvalidRSVPError::NotEnoughTokens);
-        __log(2);
+        // log(2);
     //send the payout
         transfer(selectedEvent.deposit, asset_id, selectedEvent.owner);
 
