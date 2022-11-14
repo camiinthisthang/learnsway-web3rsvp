@@ -13,6 +13,12 @@
   }
 }
 
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
 .label {
   grid-column: 1/2;
   margin: 10px;
@@ -33,7 +39,6 @@
 #createEventForm {
   display: grid;
   grid-template-columns: 250px 1fr;
-
 }
 
 .header {
@@ -99,5 +104,16 @@
   }
   to {
     transform: rotate(360deg);
+  }
+}
+@media (max-width:1025px)  {
+  .form {
+    width: 100%;
+  }
+  card {
+    width: 100%;
+  }
+  #createEventForm {
+    grid-template-columns: 90px 1fr;
   }
 }
