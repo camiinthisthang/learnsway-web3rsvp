@@ -107,6 +107,9 @@
   }
 }
 @media (max-width:1025px)  {
+  .header {
+    height: 60px;
+  }
   .form {
     width: 100%;
   }
