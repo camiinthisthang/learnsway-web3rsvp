@@ -94,6 +94,10 @@
   color: white;
 }
 
+.rsvp {
+  display: block;
+}
+
 .App-link {
   color: #61dafb;
 }

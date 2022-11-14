@@ -126,7 +126,7 @@ return (
           </button>
         </form>
       </div>
-      <div className="form">
+      <div className="form rsvp">
         <h2>RSVP to an Event</h2>
         <label className="label">Event Id</label>
         <input className="input" name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
