@@ -148,7 +148,7 @@ return (
           {rsvpConfirmed && <>
           <div className="card">
             <h1>RSVP Confirmed to the following event: {eventName}</h1>
-            <p>Num of RSVPs: {numOfRSVPs}</p>
+            <h2>Num of RSVPs: {numOfRSVPs}</h2>
           </div>
           </>}
       </div>

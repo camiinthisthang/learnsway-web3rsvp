@@ -117,6 +117,9 @@
   .form {
     width: 100%;
   }
+  .results{
+    font-size: 75%;
+  }
   card {
     width: 100%;
   }
