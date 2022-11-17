@@ -12,7 +12,6 @@ async fn get_contract_instance() -> (MyContract, ContractId, Vec<WalletUnlocked>
             Some(1_000_000_000), /* Amount per coin */
         ),
         None,
-        None
     )
     .await;
     let wallet = wallets.pop().unwrap();
@@ -28,13 +27,13 @@ async fn get_contract_instance() -> (MyContract, ContractId, Vec<WalletUnlocked>
     .await
     .unwrap();
 
-    let instance = MyContract::new(id.clone(), wallet);
+    let instance = MyContract::new(id.clone().to_string(), wallet);
 
     (instance, id.into(), wallets)
 }
 
 #[tokio::test]
-async fn can_get_contract_id() {
+async fn can_create_event_and_rsvp() {
     let (instance, _id , wallets) = get_contract_instance().await;
 
     // Now you have an instance of your contract you can use to test each function

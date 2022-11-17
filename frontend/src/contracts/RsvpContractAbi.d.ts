@@ -24,21 +24,21 @@ export type ContractIdInput = { value: string };
 export type ContractIdOutput = { value: string };
 
 export type EventInput = {
-  uniqueId: BigNumberish;
-  maxCapacity: BigNumberish;
+  unique_id: BigNumberish;
+  max_capacity: BigNumberish;
   deposit: BigNumberish;
   owner: IdentityInput;
   name: string;
-  numOfRSVPs: BigNumberish;
+  num_of_rsvps: BigNumberish;
 };
 
 export type EventOutput = {
-  uniqueId: BN;
-  maxCapacity: BN;
+  unique_id: BN;
+  max_capacity: BN;
   deposit: BN;
   owner: IdentityOutput;
   name: string;
-  numOfRSVPs: BN;
+  num_of_rsvps: BN;
 };
 
 export type IdentityInput = Enum<{
@@ -77,10 +77,10 @@ export class RsvpContractAbi extends Contract {
   interface: RsvpContractAbiInterface;
   functions: {
     create_event: InvokeFunction<
-      [capacity: BigNumberish, price: BigNumberish, eventName: string],
+      [capacity: BigNumberish, price: BigNumberish, event_name: string],
       EventOutput
     >;
 
-    rsvp: InvokeFunction<[eventId: BigNumberish], EventOutput>;
+    rsvp: InvokeFunction<[event_id: BigNumberish], EventOutput>;
   };
 }

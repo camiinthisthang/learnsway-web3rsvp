@@ -23,7 +23,7 @@ const _abi = [
       },
       {
         type: "str[10]",
-        name: "eventName",
+        name: "event_name",
       },
     ],
     outputs: [
@@ -33,11 +33,11 @@ const _abi = [
         components: [
           {
             type: "u64",
-            name: "uniqueId",
+            name: "unique_id",
           },
           {
             type: "u64",
-            name: "maxCapacity",
+            name: "max_capacity",
           },
           {
             type: "u64",
@@ -75,7 +75,7 @@ const _abi = [
           },
           {
             type: "u64",
-            name: "numOfRSVPs",
+            name: "num_of_rsvps",
           },
         ],
       },
@@ -87,7 +87,7 @@ const _abi = [
     inputs: [
       {
         type: "u64",
-        name: "eventId",
+        name: "event_id",
       },
     ],
     outputs: [
@@ -97,11 +97,11 @@ const _abi = [
         components: [
           {
             type: "u64",
-            name: "uniqueId",
+            name: "unique_id",
           },
           {
             type: "u64",
-            name: "maxCapacity",
+            name: "max_capacity",
           },
           {
             type: "u64",
@@ -139,7 +139,7 @@ const _abi = [
           },
           {
             type: "u64",
-            name: "numOfRSVPs",
+            name: "num_of_rsvps",
           },
         ],
       },
