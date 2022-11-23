@@ -5,7 +5,8 @@ import "./App.css";
 // You can also do command + space and the compiler will suggest the correct name.
 import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
-const CONTRACT_ID = "0x32f10d6f296fbd07e16f24867a11aab9d979ad95f54b223efc0d5532360ef5e4";
+// const CONTRACT_ID = "0x32f10d6f296fbd07e16f24867a11aab9d979ad95f54b223efc0d5532360ef5e4";
+const CONTRACT_ID = "0x12e87e259aa851f4e9d868aa99e068767214cfb26267edcc01d7cad41e8da3c2";
 //the private key from createWallet.js
 const WALLET_SECRET = "0x5ac6d72b42e6a558e50458956244185267976a0d602d8be50e3b60ade7e22b65"
 // Create a Wallet from given secretKey in this case
@@ -67,16 +68,16 @@ export default function App(){
       console.log(transactionResponse);
       console.log("RSVP'd to the following event", value);
       console.log("deposit value", value.deposit.toString());
-      console.log("# of RSVPs", value.numOfRSVPs.toString());
-      setNumOfRSVPs(value.numOfRSVPs.toNumber());
+      console.log("# of RSVPs", value.num_of_rsvps.toString());
+      setNumOfRSVPs(value.num_of_rsvps.toNumber());
       setEventName(value.name.toString());
-      setEventId(value.uniqueId.toString());
-      setMaxCap(value.maxCapacity.toNumber());
+      setEventId(value.unique_id.toString());
+      setMaxCap(value.max_capacity.toNumber());
       setDeposit(value.deposit.toNumber());
       //value.deposit.format()
       console.log("event name", value.name);
-      console.log("event capacity", value.maxCapacity.toString());
-      console.log("eventID", value.uniqueId.toString())
+      console.log("event capacity", value.max_capacity.toString());
+      console.log("eventID", value.unique_id.toString())
       setRSVPConfirmed(true);
       alert("rsvp successful")
     } catch (err: any) {
@@ -97,9 +98,9 @@ export default function App(){
       console.log("return of create event", value);
       console.log("deposit value", value.deposit.toString());
       console.log("event name", value.name);
-      console.log("event capacity", value.maxCapacity.toString());
-      console.log("eventID", value.uniqueId.toString())
-      setNewEventID(value.uniqueId.toString())
+      console.log("event capacity", value.max_capacity.toString());
+      console.log("eventID", value.unique_id.toString())
+      setNewEventID(value.unique_id.toString())
       //setEventId(value.uniqueId.toString())
       setEventCreation(true);
       alert('Event created');

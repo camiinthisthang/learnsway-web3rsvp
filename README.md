@@ -1,26 +1,29 @@
 # Building on Fuel with Sway - Web3RSVP
 
-In this workshop, we'll build a fullstack dapp on Fuel. 
+In this workshop, we'll build a fullstack dapp on Fuel.
 
 This dapp is a bare-bones architectural reference for an event creation and management platform, similar to Eventbrite or Luma. Users can create a new event and RSVP to an existing event. This is the functionality we're going to build out in this workshop:
+
 - Create a function in the smart contract to create a new event
 - Create a function in the smart contract to RSVP to an existing event
 
 <img width="1723" alt="Screen Shot 2022-11-14 at 5 30 07 PM" src="https://user-images.githubusercontent.com/15346823/201781695-e3530429-46ad-40ea-96d2-00d6e8f27ed5.png">
 
-
 Let's break down the tasks associated with each function:
 
-*In order to create a function to create a new event, the program will have to be able to handle the following:*
-- the user should pass in the name of the event, a deposit amount for attendees to pay to be able to RSVP to the event, and the max capacity for the event. 
-- Once a user passes this information in, our program should create an event, represented as a data structure called a `struct`. 
-- Because this is an events platform, our program should be able to handle multiple events at once. Therefore, we need a mechanism to store multiple events.
-- To store multiple events, we will use a hash map, someimtes known as a hash table in other programming languages. This hash map will `map` a unique identifier, which we'll call an `eventId`, to an event (that is represented as a struct). 
+_In order to create a function to create a new event, the program will have to be able to handle the following:_
 
-*In order to create a function to handle a user RSVP'ing, or confirming their attendance to the event, our program will have to be able to handle the following*
+- the user should pass in the name of the event, a deposit amount for attendees to pay to be able to RSVP to the event, and the max capacity for the event.
+- Once a user passes this information in, our program should create an event, represented as a data structure called a `struct`.
+- Because this is an events platform, our program should be able to handle multiple events at once. Therefore, we need a mechanism to store multiple events.
+- To store multiple events, we will use a hash map, someimtes known as a hash table in other programming languages. This hash map will `map` a unique identifier, which we'll call an `eventId`, to an event (that is represented as a struct).
+
+_In order to create a function to handle a user RSVP'ing, or confirming their attendance to the event, our program will have to be able to handle the following_
+
 - We should have a mechsnism to identify the event that the user wants to rsvp to
 
-*Some resources that may be helpful:*
+_Some resources that may be helpful:_
+
 - [Fuel Book](https://fuellabs.github.io/fuel-docs/master/)
 - [Sway Book](https://fuellabs.github.io/sway/v0.19.2/)
 - [Fuel discord](discord.gg/fuelnetwork) - get help
@@ -29,33 +32,35 @@ Let's break down the tasks associated with each function:
 
 1. Install `cargo` using [`rustup`](https://www.rust-lang.org/tools/install)
 
-    Mac and Linux:
-    ```bash
-    curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-    ```
+   Mac and Linux:
+
+   ```bash
+   curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+   ```
 
 2. Check for correct setup:
 
-    ```bash
-    $ cargo --version
-    cargo 1.62.0
-    ```
+   ```bash
+   $ cargo --version
+   cargo 1.62.0
+   ```
 
 3. Install `forc` using [`fuelup`](https://fuellabs.github.io/sway/v0.18.1/introduction/installation.html#installing-from-pre-compiled-binaries)
 
-    Mac and Linux:
-    ```bash
-    curl --proto '=https' --tlsv1.2 -sSf \
-    https://fuellabs.github.io/fuelup/fuelup-init.sh | sh
-    ```
+   Mac and Linux:
+
+   ```bash
+   curl --proto '=https' --tlsv1.2 -sSf \
+   https://fuellabs.github.io/fuelup/fuelup-init.sh | sh
+   ```
 
 4. Check for correct setup:
 
-    ```bash
-    $ forc --version
-    forc 0.18.1
-    ```
-    
+   ```bash
+   $ forc --version
+   forc 0.26.0
+   ```
+
 ### Editor
 
 You are welcome to use your editor of choice.
@@ -122,7 +127,7 @@ eventPlatform
 
 First, we'll define the ABI. An ABI defines an interface, and there is no function body in the ABI. A contract must either define or import an ABI declaration and implement it. It is considered best practice to define your ABI in a separate library and import it into your contract because this allows callers of the contract to import and use the ABI in scripts to call your contract.
 
-To define the ABI as a library, we'll create a new file in the `src` folder. Create a new file named `event_platform.sw`  
+To define the ABI as a library, we'll create a new file in the `src` folder. Create a new file named `event_platform.sw`
 
 Here is what your project structure should look like now:
 Here is the project that `Forc` has initialized:
@@ -138,9 +143,9 @@ eventPlatform
     └── harness.rs
 ```
 
-Add the following code to your ABI file, `event_platform.sw`: 
+Add the following code to your ABI file, `event_platform.sw`:
 
-``` rust
+```rust
 library event_platform;
 
 use std::{
@@ -150,20 +155,20 @@ use std::{
 
 abi eventPlatform {
     #[storage(read, write)]
-    fn create_event(maxCapacity: u64, deposit: u64, eventName: str[10]) -> Event;
+    fn create_event(max_capacity: u64, deposit: u64, event_name: str[10]) -> Event;
 
     #[storage(read, write)]
-    fn rsvp(eventId: u64) -> Event;
+    fn rsvp(event_id: u64) -> Event;
 }
 
 // defining the struct here because it would be used by other developers who would be importing this ABI
 pub struct Event {
-    uniqueId: u64,
-    maxCapacity: u64, 
-    deposit: u64, 
+    unique_id: u64,
+    max_capacity: u64,
+    deposit: u64,
     owner: Identity,
     name: str[10],
-    numOfRSVPs: u64
+    num_of_rsvps: u64,
 }
 
 ```
@@ -177,12 +182,19 @@ dep event_platform;
 use event_platform::*;
 
 use std::{
-    identity::Identity,
+   chain::auth::{AuthError, msg_sender},
+    constants::BASE_ASSET_ID,
+    context::{
+   call_frames::msg_asset_id,
+        msg_amount,
+        this_balance,
+    },
     contract_id::ContractId,
-    storage::StorageMap,
-    chain::auth::{AuthError, msg_sender},
-    context::{call_frames::msg_asset_id, msg_amount, this_balance},
+    identity::Identity,
+    logging::log,
     result::Result,
+    storage::StorageMap,
+    token::transfer,
 };
 
 storage {
@@ -190,42 +202,56 @@ storage {
     event_id_counter: u64 = 0,
 }
 
-impl eventPlatform for Contract{
+impl eventPlatform for Contract {
     #[storage(read, write)]
-    fn create_event(capacity: u64, price: u64, eventName: str[10]) -> Event {
-       let campaign_id = storage.event_id_counter;
-       let newEvent = Event {
-        uniqueId: campaign_id,
-        maxCapacity: capacity,
-        deposit: price,
-        owner: msg_sender().unwrap(),
-        name: eventName,
-        numOfRSVPs: 0
-       };
- 
+    fn create_event(capacity: u64, price: u64, event_name: str[10]) -> Event {
+        let campaign_id = storage.event_id_counter;
+        let new_event = Event {
+            unique_id: campaign_id,
+            max_capacity: capacity,
+            deposit: price,
+            owner: msg_sender().unwrap(),
+            name: event_name,
+            num_of_rsvps: 0,
+        };
 
-       storage.events.insert(campaign_id, newEvent);
-       storage.event_id_counter += 1;
-       let mut selectedEvent = storage.events.get(storage.event_id_counter -1);
-       return selectedEvent;
+        storage.events.insert(campaign_id, new_event);
+        storage.event_id_counter += 1;
+        let mut selectedEvent = storage.events.get(storage.event_id_counter - 1);
+        return selectedEvent;
     }
 
     #[storage(read, write)]
-    fn rsvp(eventId: u64) -> Event {
-    //variables are immutable by default, so you need to use the mut keyword
-    let mut selectedEvent = storage.events.get(eventId);
-    if (eventId > storage.event_id_counter) {
-        //if the user passes in an eventID that does not exist, return the first event
-        let fallback = storage.events.get(0);
-        return fallback;
-    }
-    //send the money from the msg_sender to the owner of the selected event
-    selectedEvent.numOfRSVPs += 1;
-    storage.events.insert(eventId, selectedEvent);
-    return selectedEvent;
+    fn rsvp(event_id: u64) -> Event {
+        let sender = msg_sender().unwrap();
+        let asset_id = msg_asset_id();
+        let amount = msg_amount();
+
+     // get the event
+     //variables are immutable by default, so you need to use the mut keyword
+        let mut selected_event = storage.events.get(event_id);
+
+    // check to see if the eventId is greater than storage.event_id_counter, if
+    // it is, revert
+        require(selected_event.unique_id < storage.event_id_counter, InvalidRSVPError::InvalidEventID);
+
+    // check to see if the asset_id and amounts are correct, etc, if they aren't revert
+        require(asset_id == BASE_ASSET_ID, InvalidRSVPError::IncorrectAssetId);
+        require(amount >= selected_event.deposit, InvalidRSVPError::NotEnoughTokens);
+
+          //send the payout from the msg_sender to the owner of the selected event
+        transfer(amount, asset_id, selected_event.owner);
+
+    // edit the event
+        selected_event.num_of_rsvps += 1;
+        storage.events.insert(event_id, selected_event);
+
+    // return the event
+        return selected_event;
     }
 }
 ```
+
 ### Build the Contract
 
 From inside the `web3rsvp/eventPlatform` directory, run the following command to build your contract:
@@ -273,13 +299,13 @@ The terminal will output a `transaction id to sign` and prompt you for a signatu
 
 Grab the `transaction id` from your other terminal and sign with a specified account by running the following command:
 
-``` console
+```console
 forc wallet sign` + `[transaction id here, without brackets]` + `[the account number, without brackets]`
 ```
 
 Your command should look like this:
 
-``` console
+```console
 $ forc wallet sign 16d7a8f9d15cfba1bd000d3f99cd4077dfa1fce2a6de83887afc3f739d6c84df 0
 Please enter your password to decrypt initialized wallet's phrases:
 Signature: 736dec3e92711da9f52bed7ad4e51e3ec1c9390f4b05caf10743229295ffd5c1c08a4ca477afa85909173af3feeda7c607af5109ef6eb72b6b40b3484db2332c
@@ -359,7 +385,7 @@ Now you should be able to find a new folder `Web3RSVP/frontend/src/contracts`. T
 For interacting with the fuel network we have to submit signed transactions with enough funds to cover network fees. The Fuel TS SDK don't currently support Wallet integrations, requiring us to have a non-safe wallet inside the WebApp using a privateKey.
 
 > **Note**
->This should be done only for development purpose. Never expose a web app with a private key inside. The Fuel Wallet is in active development, follow the progress [here](https://github.com/FuelLabs/fuels-wallet).
+> This should be done only for development purpose. Never expose a web app with a private key inside. The Fuel Wallet is in active development, follow the progress [here](https://github.com/FuelLabs/fuels-wallet).
 >
 > **Note**
 > The team is working to simplify the process of creating a wallet, and eliminate the need to create a wallet twice. Keep an eye out for these updates.
@@ -377,7 +403,7 @@ console.log("private key", wallet.privateKey);
 
 In a terminal, run the following command:
 
-``` console
+```console
 $ node createWallet.js
 address fuel160ek8t7fzz89wzl595yz0rjrgj3xezjp6pujxzt2chn70jrdylus5apcuq
 private key 0x719fb4da652f2bd4ad25ce04f4c2e491926605b40e5475a80551be68d57e0fcb
@@ -407,27 +433,47 @@ import "./App.css";
 // You can also do command + space and the compiler will suggest the correct name.
 import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
+// const CONTRACT_ID = "0x32f10d6f296fbd07e16f24867a11aab9d979ad95f54b223efc0d5532360ef5e4";
 const CONTRACT_ID = "<YOUR-CONTRACT-ADDRESS-HERE>";
 //the private key from createWallet.js
-const WALLET_SECRET = "<YOUR-GENERATED-PRIVATE-KEY>"
+const WALLET_SECRET = "<YOU-PRIVATE-KEY-HERE>"
 // Create a Wallet from given secretKey in this case
 // The one we configured at the chainConfig.json
 const wallet = new Wallet(WALLET_SECRET, "https://node-beta-1.fuel.network/graphql");
 // Connects out Contract instance to the deployed contract
 // address using the given wallet.
-const contract = Abi__factory.connect(CONTRACT_ID, wallet);
+const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
 
 export default function App(){
   const [loading, setLoading] = useState(false);
-  const [eventId, setEventId] = useState('');
-  const [eventName, setEventName] = useState('')
-  const [maxCap, setMaxCap] = useState(0)
-  const [deposit, setDeposit] = useState(0)
+  //-----------------------------------------------//
+  //state variables to capture the selection of an existing event to RSVP to
+  const [eventName, setEventName] = useState('');
+  const [maxCap, setMaxCap] = useState(0);
+  const [deposit, setDeposit] = useState(0);
   const [eventCreation, setEventCreation] = useState(false);
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
+  const [numOfRSVPs, setNumOfRSVPs] = useState(0);
+  const [eventId, setEventId] = useState('');
+  //-------------------------------------------------//
+  //state variables to capture the creation of an event
+  const [newEventName, setNewEventName] = useState('');
+  const [newEventMax, setNewEventMax] = useState(0);
+  const [newEventDeposit, setNewEventDeposit] = useState(0);
+  const [newEventID, setNewEventID] = useState('')
+  const [newEventRSVP, setNewEventRSVP] = useState(0);
 
   useEffect(() => {
-    // Update the document title using the browser API
+    console.log('Wallet address', wallet.address.toString());
+    wallet.getBalances().then(balances => {
+      const balancesFormatted = balances.map(balance => {
+        return [balance.assetId, balance.amount.format()];
+      });
+      console.log('Wallet balances', balancesFormatted);
+    });
+  }, []);
+
+  useEffect(() => {
     console.log("eventName", eventName);
     console.log("deposit", deposit);
     console.log("max cap", maxCap);
@@ -436,19 +482,31 @@ export default function App(){
   async function rsvpToEvent(){
     setLoading(true);
     try {
-      const { value } = await contract.functions.rsvp(eventId).txParams({gasPrice: 1}).call();
+      console.log('amount deposit', deposit);
+      const { value, transactionResponse, transactionResult } = await contract.functions.rsvp(eventId).callParams({
+        forward: [deposit]
+        //variable outputs is when a transaction creates a new dynamic UTXO
+        //for each transaction you do, you'll need another variable output
+        //for now, you have to set it manually, but the TS team is working on an issue to set this automatically
+      }).txParams({gasPrice: 1, variableOutputs: 1}).call();
+      console.log(transactionResult);
+      console.log(transactionResponse);
       console.log("RSVP'd to the following event", value);
       console.log("deposit value", value.deposit.toString());
+      console.log("# of RSVPs", value.num_of_rsvps.toString());
+      setNumOfRSVPs(value.num_of_rsvps.toNumber());
       setEventName(value.name.toString());
-      setEventId(value.uniqueId.toString());
-      setMaxCap(value.maxCapacity.toNumber());
+      setEventId(value.unique_id.toString());
+      setMaxCap(value.max_capacity.toNumber());
       setDeposit(value.deposit.toNumber());
+      //value.deposit.format()
       console.log("event name", value.name);
-      console.log("event capacity", value.maxCapacity.toString());
-      console.log("eventID", value.uniqueId.toString()) 
+      console.log("event capacity", value.max_capacity.toString());
+      console.log("eventID", value.unique_id.toString())
       setRSVPConfirmed(true);
       alert("rsvp successful")
     } catch (err: any) {
+      console.error(err);
       alert(err.message);
     } finally {
       setLoading(false)
@@ -460,14 +518,15 @@ export default function App(){
     setLoading(true);
     try {
       console.log("creating event")
-      const { value } = await contract.functions.create_event(maxCap, deposit, eventName).txParams({gasPrice: 1}).call();
+      const { value } = await contract.functions.create_event(newEventMax, newEventDeposit, newEventName).txParams({gasPrice: 1}).call();
 
       console.log("return of create event", value);
       console.log("deposit value", value.deposit.toString());
       console.log("event name", value.name);
-      console.log("event capacity", value.maxCapacity.toString());
-      console.log("eventID", value.uniqueId.toString())
-      setEventId(value.uniqueId.toString())
+      console.log("event capacity", value.max_capacity.toString());
+      console.log("eventID", value.unique_id.toString())
+      setNewEventID(value.unique_id.toString())
+      //setEventId(value.uniqueId.toString())
       setEventCreation(true);
       alert('Event created');
     } catch (err: any) {
@@ -477,36 +536,50 @@ export default function App(){
     }
   }
 return (
-  <div>
-    <form id="createEventForm" onSubmit={createEvent}>
-    <input value = {eventName} onChange={e => setEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
-      <input value = {maxCap} onChange={e => setMaxCap(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
-      <input value = {deposit} onChange={e => setDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
-      <button disabled={loading}>
-        {loading ? "creating..." : "create"}
-      </button>
-    </form>
-    <div>
-      <input name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
-      <button onClick={rsvpToEvent}>RSVP</button>
-    </div>
-    <div> 
-    {eventCreation &&
-    <>
-    <h1> New event created</h1>
-    <h2> Event Name: {eventName} </h2>
-    <h2> Event ID: {eventId}</h2>
-    <h2>Max capacity: {maxCap}</h2>
-    <h2>Deposit: {deposit}</h2>
-    </>
-    }
-    </div> 
-    <div>
-    {rsvpConfirmed && <>
-    <h1>RSVP Confirmed to the following event: {eventName}</h1>
-    </>}
-    </div>
+  <div className="main">
+    <div className="header">Building on Fuel with Sway - Web3RSVP</div>
+      <div className="form">
+        <h2>Create Your Event Today!</h2>
+        <form id="createEventForm" onSubmit={createEvent}>
+          <label className="label">Event Name</label>
+          <input className="input" value = {newEventName} onChange={e => setNewEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
+          <label className="label">Max Cap</label>
+          <input className="input" value = {newEventMax} onChange={e => setNewEventMax(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
+          <label className="label">Deposit</label>
+          <input className="input" value = {newEventDeposit} onChange={e => setNewEventDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
+          <button className="button" disabled={loading}>
+            {loading ? "creating..." : "create"}
+          </button>
+        </form>
+      </div>
+      <div className="form">
+        <h2>RSVP to an Event</h2>
+        <label className="label">Event Id</label>
+        <input className="input" name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
+        <button className="button" onClick={rsvpToEvent}>RSVP</button>
+      </div>
+      <div className="results">
+        <div className="card">
+          {eventCreation &&
+          <>
+          <h1> New event created</h1>
+          <h2> Event Name: {newEventName} </h2>
+          <h2> Event ID: {newEventID}</h2>
+          <h2>Max capacity: {newEventMax}</h2>
+          <h2>Deposit: {newEventDeposit}</h2>
+          <h2>Num of RSVPs: {newEventRSVP}</h2>
+          </>
+          }
+        </div>
+          {rsvpConfirmed && <>
+          <div className="card">
+            <h1>RSVP Confirmed to the following event: {eventName}</h1>
+            <p>Num of RSVPs: {numOfRSVPs}</p>
+          </div>
+          </>}
+      </div>
   </div>
+
 );
 }
 ```
@@ -536,7 +609,7 @@ To create a production build, use npm run build.
 
 Tweet me [@camiinthisthang](https://twitter.com/camiinthisthang) and let me know you just built a dapp on Fuel, you might get invited to a private group of builders, be invited to the next Fuel dinner, get alpha on the project, or something 👀.
 
->Note: To push this project up to a github repo, you'll have to remove the `.git` file that automatically gets created with `create-react-app`. You can do that by running the following command in `Web3RSVP/frontend`: `Rm -rf .git`. Then, you'll be good to add, commit, and push these files.
+> Note: To push this project up to a github repo, you'll have to remove the `.git` file that automatically gets created with `create-react-app`. You can do that by running the following command in `Web3RSVP/frontend`: `Rm -rf .git`. Then, you'll be good to add, commit, and push these files.
 
 ### Updating The Contract
 

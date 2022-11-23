@@ -4,10 +4,10 @@ dep event_platform;
 use event_platform::*;
 
 use std::{
-   auth::{AuthError, msg_sender},
-   call_frames::msg_asset_id,
+   chain::auth::{AuthError, msg_sender},
     constants::BASE_ASSET_ID,
     context::{
+   call_frames::msg_asset_id,
         msg_amount,
         this_balance,
     },
