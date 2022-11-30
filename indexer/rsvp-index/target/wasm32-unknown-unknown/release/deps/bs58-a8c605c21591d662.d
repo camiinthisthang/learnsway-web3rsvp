@@ -1,0 +1,10 @@
+/Users/camiinthisthang/Desktop/Workspace/Fuel/learnsway-web3rsvp/indexer/rsvp-index/target/wasm32-unknown-unknown/release/deps/bs58-a8c605c21591d662.rmeta: /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/lib.rs /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/alphabet.rs /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/decode.rs /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/encode.rs
+
+/Users/camiinthisthang/Desktop/Workspace/Fuel/learnsway-web3rsvp/indexer/rsvp-index/target/wasm32-unknown-unknown/release/deps/libbs58-a8c605c21591d662.rlib: /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/lib.rs /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/alphabet.rs /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/decode.rs /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/encode.rs
+
+/Users/camiinthisthang/Desktop/Workspace/Fuel/learnsway-web3rsvp/indexer/rsvp-index/target/wasm32-unknown-unknown/release/deps/bs58-a8c605c21591d662.d: /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/lib.rs /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/alphabet.rs /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/decode.rs /Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/encode.rs
+
+/Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/lib.rs:
+/Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/alphabet.rs:
+/Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/decode.rs:
+/Users/camiinthisthang/.cargo/registry/src/github.com-1ecc6299db9ec823/bs58-0.4.0/src/encode.rs:

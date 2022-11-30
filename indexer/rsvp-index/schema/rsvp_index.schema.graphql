@@ -1,0 +1,16 @@
+schema {
+    query: QueryRoot
+}
+
+type QueryRoot {
+    account: Account
+}
+
+type CreatedEvent {
+    id: ID!
+    event_id: UInt8!
+    max_capacity: UInt8!
+    deposit: UInt8!
+    owner: Address!
+    rsvps: UInt8!
+}

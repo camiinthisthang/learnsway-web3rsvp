@@ -1,0 +1,6 @@
+namespace: fuel
+identifier: rsvp_index
+abi: /Users/camiinthisthang/Desktop/Workspace/Fuel/learnsway-web3rsvp/rsvpContract/out/debug/rsvpContract-abi.json
+graphql_schema: /Users/camiinthisthang/Desktop/Workspace/Fuel/learnsway-web3rsvp/indexer/rsvp-index/schema/rsvp_index.schema.graphql
+module:
+  wasm: /path/to/your/index_wasm_module.wasm
