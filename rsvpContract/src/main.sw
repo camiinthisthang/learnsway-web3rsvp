@@ -77,4 +77,12 @@ impl eventPlatform for Contract {
     // return the event
         return selected_event;
     }
+
+    #[storage(read)]
+    fn get_event(event_id: u64) -> Event {
+        // pass in the associated ID from the function that creates the new event or directly from user input state
+        // call the get method
+        //call this function in curly braces directly in the html as jsx 
+        return storage.events.get(event_id);
+    }
 }

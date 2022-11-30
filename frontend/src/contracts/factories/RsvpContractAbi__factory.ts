@@ -145,6 +145,70 @@ const _abi = [
       },
     ],
   },
+  {
+    type: "function",
+    name: "get_event",
+    inputs: [
+      {
+        type: "u64",
+        name: "event_id",
+      },
+    ],
+    outputs: [
+      {
+        type: "struct Event",
+        name: "",
+        components: [
+          {
+            type: "u64",
+            name: "unique_id",
+          },
+          {
+            type: "u64",
+            name: "max_capacity",
+          },
+          {
+            type: "u64",
+            name: "deposit",
+          },
+          {
+            type: "enum Identity",
+            name: "owner",
+            components: [
+              {
+                type: "struct Address",
+                name: "Address",
+                components: [
+                  {
+                    type: "b256",
+                    name: "value",
+                  },
+                ],
+              },
+              {
+                type: "struct ContractId",
+                name: "ContractId",
+                components: [
+                  {
+                    type: "b256",
+                    name: "value",
+                  },
+                ],
+              },
+            ],
+          },
+          {
+            type: "str[10]",
+            name: "name",
+          },
+          {
+            type: "u64",
+            name: "num_of_rsvps",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export class RsvpContractAbi__factory {

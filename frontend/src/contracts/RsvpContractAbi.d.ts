@@ -55,6 +55,7 @@ interface RsvpContractAbiInterface extends Interface {
   functions: {
     create_event: FunctionFragment;
     rsvp: FunctionFragment;
+    get_event: FunctionFragment;
   };
 
   encodeFunctionData(
@@ -65,12 +66,20 @@ interface RsvpContractAbiInterface extends Interface {
     functionFragment: "rsvp",
     values: [BigNumberish]
   ): Uint8Array;
+  encodeFunctionData(
+    functionFragment: "get_event",
+    values: [BigNumberish]
+  ): Uint8Array;
 
   decodeFunctionData(
     functionFragment: "create_event",
     data: BytesLike
   ): DecodedValue;
   decodeFunctionData(functionFragment: "rsvp", data: BytesLike): DecodedValue;
+  decodeFunctionData(
+    functionFragment: "get_event",
+    data: BytesLike
+  ): DecodedValue;
 }
 
 export class RsvpContractAbi extends Contract {
@@ -82,5 +91,7 @@ export class RsvpContractAbi extends Contract {
     >;
 
     rsvp: InvokeFunction<[event_id: BigNumberish], EventOutput>;
+
+    get_event: InvokeFunction<[event_id: BigNumberish], EventOutput>;
   };
 }

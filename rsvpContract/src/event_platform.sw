@@ -8,6 +8,9 @@ abi eventPlatform {
 
     #[storage(read, write)]
     fn rsvp(event_id: u64) -> Event;
+
+    #[storage(read)]
+    fn get_event(event_id: u64) -> Event;
 }
 
 // The Event structure is defined here to be used from other contracts when calling the ABI. 
