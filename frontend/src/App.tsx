@@ -1,23 +1,48 @@
-import React, { useEffect, useState } from "react";
-import { Wallet } from "fuels";
+import React, { useEffect, useState, useMemo } from "react";
+import { useFuelWeb3 } from "./hooks/useFuelWeb3";
+import { useIsConnected } from "./hooks/useIsConnected";
+import { ConnectRequest } from "./pages/ConnectRequest";
+import { Wallet, Provider, WalletLocked } from "fuels";
 import "./App.css";
+
 // Import the contract factory -- you can find the name in index.ts.
 // You can also do command + space and the compiler will suggest the correct name.
 import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
 // const CONTRACT_ID = "0x32f10d6f296fbd07e16f24867a11aab9d979ad95f54b223efc0d5532360ef5e4";
-const CONTRACT_ID = "0x12e87e259aa851f4e9d868aa99e068767214cfb26267edcc01d7cad41e8da3c2";
+const CONTRACT_ID = "0xedacd262125f908ae1ea946759f2523b4ac8738140a2925ec55c87ce095ae478";
 //the private key from createWallet.js
 const WALLET_SECRET = "0x5ac6d72b42e6a558e50458956244185267976a0d602d8be50e3b60ade7e22b65"
-// Create a Wallet from given secretKey in this case
-// The one we configured at the chainConfig.json
-const wallet = new Wallet(WALLET_SECRET, "https://node-beta-1.fuel.network/graphql");
-// Connects out Contract instance to the deployed contract
-// address using the given wallet.
-const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
+//this creates a locked wallet, one with a private key
 
 export default function App(){
+  const isConnected = useIsConnected();
+  const [FuelWeb3] = useFuelWeb3();
   const [loading, setLoading] = useState(false);
+  const [accounts, setAccounts] = useState<Array<string>>([]);
+
+  useEffect(() => {
+    async function getAccounts() {
+      const accounts = await FuelWeb3.accounts();
+      setAccounts(accounts);
+    }
+    if (FuelWeb3) getAccounts();
+  }, [FuelWeb3]);
+
+  const [contract, wallet] = useMemo(() => {
+    if (FuelWeb3 && accounts[0]) {
+      const wallet = new WalletLocked(accounts[0], FuelWeb3.getProvider());
+      // Connects out Contract instance to the deployed contract
+      // address using the given wallet.
+      const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
+
+      return [contract, wallet];  
+    }
+    return [null, null];
+  }, [FuelWeb3, accounts]);
+  
+
+
   //-----------------------------------------------//
   //state variables to capture the selection of an existing event to RSVP to
   const [eventName, setEventName] = useState('');
@@ -35,18 +60,17 @@ export default function App(){
   const [newEventID, setNewEventID] = useState('')
   const [newEventRSVP, setNewEventRSVP] = useState(0);
 
-
-
-
   useEffect(() => {
-    console.log('Wallet address', wallet.address.toString());
-    wallet.getBalances().then(balances => {
-      const balancesFormatted = balances.map(balance => {
-        return [balance.assetId, balance.amount.format()];
+    if (wallet) {
+      console.log('Wallet address', wallet.address.toString());
+      wallet.getBalances().then(balances => {
+        const balancesFormatted = balances.map(balance => {
+          return [balance.assetId, balance.amount.format()];
+        });
+        console.log('Wallet balances', balancesFormatted);
       });
-      console.log('Wallet balances', balancesFormatted);
-    });
-  }, []);
+    }
+  }, [wallet]);
 
   useEffect(() => {
     console.log("eventName", eventName);
@@ -54,11 +78,15 @@ export default function App(){
     console.log("max cap", maxCap);
   },[eventName, maxCap, deposit]);
 
+  if (!isConnected) {
+    return <ConnectRequest />;
+  }
+
   async function rsvpToEvent(){
     setLoading(true);
     try {
       console.log('amount deposit', deposit);
-      const { value, transactionResponse, transactionResult } = await contract.functions.rsvp(eventId).callParams({
+      const { value, transactionResponse, transactionResult } = await contract!.functions.rsvp(eventId).callParams({
         forward: [deposit]
         //variable outputs is when a transaction creates a new dynamic UTXO
         //for each transaction you do, you'll need another variable output
@@ -93,7 +121,7 @@ export default function App(){
     setLoading(true);
     try {
       console.log("creating event")
-      const { value } = await contract.functions.create_event(newEventMax, newEventDeposit, newEventName).txParams({gasPrice: 1}).call();
+      const { value } = await contract!.functions.create_event(newEventMax, newEventDeposit, newEventName).txParams({gasPrice: 1}).call();
 
       console.log("return of create event", value);
       console.log("deposit value", value.deposit.toString());

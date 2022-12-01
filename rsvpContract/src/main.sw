@@ -4,12 +4,15 @@ dep event_platform;
 use event_platform::*;
 
 use std::{
-   chain::auth::{AuthError, msg_sender},
+   auth::{
+        AuthError,
+        msg_sender,
+    },
     constants::BASE_ASSET_ID,
+    call_frames::msg_asset_id,
     context::{
-   call_frames::msg_asset_id,
-        msg_amount,
         this_balance,
+        msg_amount,
     },
     contract_id::ContractId,
     identity::Identity,
