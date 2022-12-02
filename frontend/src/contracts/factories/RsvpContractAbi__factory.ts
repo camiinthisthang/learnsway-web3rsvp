@@ -2,150 +2,223 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { Provider, Wallet, AbstractAddress } from "fuels";
+import type { Provider, BaseWalletLocked, AbstractAddress } from "fuels";
 import { Interface, Contract } from "fuels";
 import type {
   RsvpContractAbi,
   RsvpContractAbiInterface,
 } from "../RsvpContractAbi";
-const _abi = [
-  {
-    type: "function",
-    name: "create_event",
-    inputs: [
-      {
-        type: "u64",
-        name: "capacity",
-      },
-      {
-        type: "u64",
-        name: "price",
-      },
-      {
-        type: "str[10]",
-        name: "event_name",
-      },
-    ],
-    outputs: [
-      {
-        type: "struct Event",
+const _abi = {
+  types: [
+    {
+      typeId: 0,
+      type: "()",
+      components: [],
+      typeParameters: null,
+    },
+    {
+      typeId: 1,
+      type: "b256",
+      components: null,
+      typeParameters: null,
+    },
+    {
+      typeId: 2,
+      type: "enum Identity",
+      components: [
+        {
+          name: "Address",
+          type: 5,
+          typeArguments: null,
+        },
+        {
+          name: "ContractId",
+          type: 6,
+          typeArguments: null,
+        },
+      ],
+      typeParameters: null,
+    },
+    {
+      typeId: 3,
+      type: "enum InvalidRSVPError",
+      components: [
+        {
+          name: "IncorrectAssetId",
+          type: 0,
+          typeArguments: null,
+        },
+        {
+          name: "NotEnoughTokens",
+          type: 0,
+          typeArguments: null,
+        },
+        {
+          name: "InvalidEventID",
+          type: 0,
+          typeArguments: null,
+        },
+      ],
+      typeParameters: null,
+    },
+    {
+      typeId: 4,
+      type: "str[10]",
+      components: null,
+      typeParameters: null,
+    },
+    {
+      typeId: 5,
+      type: "struct Address",
+      components: [
+        {
+          name: "value",
+          type: 1,
+          typeArguments: null,
+        },
+      ],
+      typeParameters: null,
+    },
+    {
+      typeId: 6,
+      type: "struct ContractId",
+      components: [
+        {
+          name: "value",
+          type: 1,
+          typeArguments: null,
+        },
+      ],
+      typeParameters: null,
+    },
+    {
+      typeId: 7,
+      type: "struct Event",
+      components: [
+        {
+          name: "unique_id",
+          type: 8,
+          typeArguments: null,
+        },
+        {
+          name: "max_capacity",
+          type: 8,
+          typeArguments: null,
+        },
+        {
+          name: "deposit",
+          type: 8,
+          typeArguments: null,
+        },
+        {
+          name: "owner",
+          type: 2,
+          typeArguments: null,
+        },
+        {
+          name: "name",
+          type: 4,
+          typeArguments: null,
+        },
+        {
+          name: "num_of_rsvps",
+          type: 8,
+          typeArguments: null,
+        },
+      ],
+      typeParameters: null,
+    },
+    {
+      typeId: 8,
+      type: "u64",
+      components: null,
+      typeParameters: null,
+    },
+  ],
+  functions: [
+    {
+      inputs: [
+        {
+          name: "capacity",
+          type: 8,
+          typeArguments: null,
+        },
+        {
+          name: "price",
+          type: 8,
+          typeArguments: null,
+        },
+        {
+          name: "event_name",
+          type: 4,
+          typeArguments: null,
+        },
+      ],
+      name: "create_event",
+      output: {
         name: "",
-        components: [
-          {
-            type: "u64",
-            name: "unique_id",
-          },
-          {
-            type: "u64",
-            name: "max_capacity",
-          },
-          {
-            type: "u64",
-            name: "deposit",
-          },
-          {
-            type: "enum Identity",
-            name: "owner",
-            components: [
-              {
-                type: "struct Address",
-                name: "Address",
-                components: [
-                  {
-                    type: "b256",
-                    name: "value",
-                  },
-                ],
-              },
-              {
-                type: "struct ContractId",
-                name: "ContractId",
-                components: [
-                  {
-                    type: "b256",
-                    name: "value",
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            type: "str[10]",
-            name: "name",
-          },
-          {
-            type: "u64",
-            name: "num_of_rsvps",
-          },
-        ],
+        type: 7,
+        typeArguments: null,
       },
-    ],
-  },
-  {
-    type: "function",
-    name: "rsvp",
-    inputs: [
-      {
-        type: "u64",
-        name: "event_id",
-      },
-    ],
-    outputs: [
-      {
-        type: "struct Event",
+    },
+    {
+      inputs: [
+        {
+          name: "event_id",
+          type: 8,
+          typeArguments: null,
+        },
+      ],
+      name: "get_rsvp",
+      output: {
         name: "",
-        components: [
-          {
-            type: "u64",
-            name: "unique_id",
-          },
-          {
-            type: "u64",
-            name: "max_capacity",
-          },
-          {
-            type: "u64",
-            name: "deposit",
-          },
-          {
-            type: "enum Identity",
-            name: "owner",
-            components: [
-              {
-                type: "struct Address",
-                name: "Address",
-                components: [
-                  {
-                    type: "b256",
-                    name: "value",
-                  },
-                ],
-              },
-              {
-                type: "struct ContractId",
-                name: "ContractId",
-                components: [
-                  {
-                    type: "b256",
-                    name: "value",
-                  },
-                ],
-              },
-            ],
-          },
-          {
-            type: "str[10]",
-            name: "name",
-          },
-          {
-            type: "u64",
-            name: "num_of_rsvps",
-          },
-        ],
+        type: 7,
+        typeArguments: null,
       },
-    ],
-  },
-];
+    },
+    {
+      inputs: [
+        {
+          name: "event_id",
+          type: 8,
+          typeArguments: null,
+        },
+      ],
+      name: "rsvp",
+      output: {
+        name: "",
+        type: 7,
+        typeArguments: null,
+      },
+    },
+  ],
+  loggedTypes: [
+    {
+      logId: 0,
+      loggedType: {
+        name: "",
+        type: 3,
+        typeArguments: [],
+      },
+    },
+    {
+      logId: 1,
+      loggedType: {
+        name: "",
+        type: 3,
+        typeArguments: [],
+      },
+    },
+    {
+      logId: 2,
+      loggedType: {
+        name: "",
+        type: 3,
+        typeArguments: [],
+      },
+    },
+  ],
+};
 
 export class RsvpContractAbi__factory {
   static readonly abi = _abi;
@@ -154,7 +227,7 @@ export class RsvpContractAbi__factory {
   }
   static connect(
     id: string | AbstractAddress,
-    walletOrProvider: Wallet | Provider
+    walletOrProvider: BaseWalletLocked | Provider
   ): RsvpContractAbi {
     return new Contract(
       id,

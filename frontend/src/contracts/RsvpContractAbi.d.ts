@@ -54,6 +54,7 @@ export type IdentityOutput = Enum<{
 interface RsvpContractAbiInterface extends Interface {
   functions: {
     create_event: FunctionFragment;
+    get_rsvp: FunctionFragment;
     rsvp: FunctionFragment;
   };
 
@@ -62,12 +63,20 @@ interface RsvpContractAbiInterface extends Interface {
     values: [BigNumberish, BigNumberish, string]
   ): Uint8Array;
   encodeFunctionData(
+    functionFragment: "get_rsvp",
+    values: [BigNumberish]
+  ): Uint8Array;
+  encodeFunctionData(
     functionFragment: "rsvp",
     values: [BigNumberish]
   ): Uint8Array;
 
   decodeFunctionData(
     functionFragment: "create_event",
+    data: BytesLike
+  ): DecodedValue;
+  decodeFunctionData(
+    functionFragment: "get_rsvp",
     data: BytesLike
   ): DecodedValue;
   decodeFunctionData(functionFragment: "rsvp", data: BytesLike): DecodedValue;
@@ -80,6 +89,8 @@ export class RsvpContractAbi extends Contract {
       [capacity: BigNumberish, price: BigNumberish, event_name: string],
       EventOutput
     >;
+
+    get_rsvp: InvokeFunction<[event_id: BigNumberish], EventOutput>;
 
     rsvp: InvokeFunction<[event_id: BigNumberish], EventOutput>;
   };
