@@ -7,6 +7,7 @@ export function useIsConnected() {
 
     useEffect(() => {
         async function connect() {
+            console.log('connection changed');
             const accounts = await FuelWeb3.accounts();
             console.log('accounts', accounts);
             //if length is 0 it means you're not connected
@@ -19,7 +20,7 @@ export function useIsConnected() {
         return () => {
             FuelWeb3?.off('connection', connect)
         };
-    }, []);
+    }, [FuelWeb3]);
 
     return isConnected;
 }

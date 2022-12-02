@@ -80,4 +80,10 @@ impl eventPlatform for Contract {
     // return the event
         return selected_event;
     }
+
+    #[storage(read)]
+    fn get_rsvp(event_id: u64) -> Event {
+        let selected_event = storage.events.get(event_id);
+        selected_event
+    }
 }

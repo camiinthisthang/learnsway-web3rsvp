@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useFuelWeb3 } from "./hooks/useFuelWeb3";
 import { useIsConnected } from "./hooks/useIsConnected";
 import { ConnectRequest } from "./pages/ConnectRequest";
-import { Wallet, Provider, WalletLocked } from "fuels";
+import { Wallet, Provider, WalletLocked, bn } from "fuels";
 import "./App.css";
 
 // Import the contract factory -- you can find the name in index.ts.
@@ -10,7 +10,7 @@ import "./App.css";
 import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
 // const CONTRACT_ID = "0x32f10d6f296fbd07e16f24867a11aab9d979ad95f54b223efc0d5532360ef5e4";
-const CONTRACT_ID = "0xedacd262125f908ae1ea946759f2523b4ac8738140a2925ec55c87ce095ae478";
+const CONTRACT_ID = "0x0a98320d39c03337401a4e46263972a9af6ce69ec2f35a5420b1bd35784c74b1";
 //the private key from createWallet.js
 const WALLET_SECRET = "0x5ac6d72b42e6a558e50458956244185267976a0d602d8be50e3b60ade7e22b65"
 //this creates a locked wallet, one with a private key
@@ -39,15 +39,13 @@ export default function App(){
       return [contract, wallet];  
     }
     return [null, null];
-  }, [FuelWeb3, accounts]);
-  
+  }, [FuelWeb3, accounts, isConnected]);
 
 
   //-----------------------------------------------//
   //state variables to capture the selection of an existing event to RSVP to
   const [eventName, setEventName] = useState('');
   const [maxCap, setMaxCap] = useState(0);
-  const [deposit, setDeposit] = useState(0);
   const [eventCreation, setEventCreation] = useState(false);
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
   const [numOfRSVPs, setNumOfRSVPs] = useState(0);
@@ -72,12 +70,6 @@ export default function App(){
     }
   }, [wallet]);
 
-  useEffect(() => {
-    console.log("eventName", eventName);
-    console.log("deposit", deposit);
-    console.log("max cap", maxCap);
-  },[eventName, maxCap, deposit]);
-
   if (!isConnected) {
     return <ConnectRequest />;
   }
@@ -85,34 +77,40 @@ export default function App(){
   async function rsvpToEvent(){
     setLoading(true);
     try {
-      console.log('amount deposit', deposit);
-      const { value, transactionResponse, transactionResult } = await contract!.functions.rsvp(eventId).callParams({
-        forward: [deposit]
+      console.log('RSVPing to event');
+      // Retrieve the current RSVP data
+      const { value: eventData } = await contract!.functions.get_rsvp(eventId).get();
+      const requiredAmountToRSVP = eventData.deposit.toString();
+      
+      console.log("deposit required to rsvp", requiredAmountToRSVP.toString());
+      setEventId(eventData.unique_id.toString());
+      setMaxCap(eventData.max_capacity.toNumber());
+      setEventName(eventData.name.toString());
+      console.log("event name", eventData.name);
+      console.log("event capacity", eventData.max_capacity.toString());
+      console.log("eventID", eventData.unique_id.toString())
+      
+      // Create a transaction to RSVP to the event
+      const { value: eventRSVP, transactionId } = await contract!.functions.rsvp(eventId).callParams({
+        forward: [requiredAmountToRSVP]
         //variable outputs is when a transaction creates a new dynamic UTXO
         //for each transaction you do, you'll need another variable output
         //for now, you have to set it manually, but the TS team is working on an issue to set this automatically
       }).txParams({gasPrice: 1, variableOutputs: 1}).call();
-      console.log(transactionResult);
-      console.log(transactionResponse);
-      console.log("RSVP'd to the following event", value);
-      console.log("deposit value", value.deposit.toString());
-      console.log("# of RSVPs", value.num_of_rsvps.toString());
-      setNumOfRSVPs(value.num_of_rsvps.toNumber());
-      setEventName(value.name.toString());
-      setEventId(value.unique_id.toString());
-      setMaxCap(value.max_capacity.toNumber());
-      setDeposit(value.deposit.toNumber());
-      //value.deposit.format()
-      console.log("event name", value.name);
-      console.log("event capacity", value.max_capacity.toString());
-      console.log("eventID", value.unique_id.toString())
+
+      console.log(
+        'Transaction created', transactionId,
+        `https://fuellabs.github.io/block-explorer-v2/transaction/${transactionId}`
+      );
+      console.log("# of RSVPs", eventRSVP.num_of_rsvps.toString());
+      setNumOfRSVPs(eventRSVP.num_of_rsvps.toNumber());
       setRSVPConfirmed(true);
-      alert("rsvp successful")
+      alert("rsvp successful");
     } catch (err: any) {
       console.error(err);
       alert(err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -120,11 +118,13 @@ export default function App(){
     e.preventDefault();
     setLoading(true);
     try {
-      console.log("creating event")
-      const { value } = await contract!.functions.create_event(newEventMax, newEventDeposit, newEventName).txParams({gasPrice: 1}).call();
+      console.log("creating event");
+      const requiredDeposit = bn.parseUnits(newEventDeposit.toString());
+      console.log('requiredDeposit', requiredDeposit.toString());
+      const { value } = await contract!.functions.create_event(newEventMax, requiredDeposit, newEventName).txParams({gasPrice: 1}).call();
 
       console.log("return of create event", value);
-      console.log("deposit value", value.deposit.toString());
+      console.log("deposit value", bn.parseUnits(newEventDeposit.toString()).toString());
       console.log("event name", value.name);
       console.log("event capacity", value.max_capacity.toString());
       console.log("eventID", value.unique_id.toString())

@@ -169,6 +169,21 @@ const _abi = {
           typeArguments: null,
         },
       ],
+      name: "get_rsvp",
+      output: {
+        name: "",
+        type: 7,
+        typeArguments: null,
+      },
+    },
+    {
+      inputs: [
+        {
+          name: "event_id",
+          type: 8,
+          typeArguments: null,
+        },
+      ],
       name: "rsvp",
       output: {
         name: "",
