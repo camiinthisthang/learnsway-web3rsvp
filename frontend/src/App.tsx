@@ -133,7 +133,7 @@ export default function App() {
     try {
       console.log("creating event");
       const requiredDeposit = bn.parseUnits(newEventDeposit.toString());
-      console.log("requiredDeposit", requiredDeposit.toString());
+      console.log("requiredDeposit", requiredDeposit.toString()); 
       const { value } = await contract!.functions
         .create_event(newEventMax, requiredDeposit, newEventName)
         .txParams({ gasPrice: 1 })
@@ -308,8 +308,8 @@ export default function App() {
                       type="number"
                       name="event-name"
                       id="event-name"
-                      value={newEventName}
-                      onChange={(e) => setNewEventName(e.target.value)}
+                      value={eventId}
+                      onChange={(e) => setEventId(e.target.value)}
                       placeholder="Enter event name"
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                     />
