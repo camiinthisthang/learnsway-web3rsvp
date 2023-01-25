@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useFuelWeb3 } from "./hooks/useFuelWeb3";
+import { useFuel } from "./hooks/useFuelWeb3";
 import { useIsConnected } from "./hooks/useIsConnected";
 import { ConnectRequest } from "./pages/ConnectRequest";
 import { Wallet, Provider, WalletLocked, bn } from "fuels";
@@ -13,7 +13,7 @@ import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
 // const CONTRACT_ID = "0x32f10d6f296fbd07e16f24867a11aab9d979ad95f54b223efc0d5532360ef5e4";
 const CONTRACT_ID =
-  "0x0a98320d39c03337401a4e46263972a9af6ce69ec2f35a5420b1bd35784c74b1";
+  "0x0314f13ea8a2f710de1317d0f50d7ec299e60dc8fe17c26de765766a39c8b04c";
 //the private key from createWallet.js
 const WALLET_SECRET =
   "0x5ac6d72b42e6a558e50458956244185267976a0d602d8be50e3b60ade7e22b65";
@@ -21,21 +21,21 @@ const WALLET_SECRET =
 
 export default function App() {
   const isConnected = useIsConnected();
-  const [FuelWeb3] = useFuelWeb3();
+  const [fuel] = useFuel();
   const [loading, setLoading] = useState(false);
   const [accounts, setAccounts] = useState<Array<string>>([]);
 
   useEffect(() => {
     async function getAccounts() {
-      const accounts = await FuelWeb3.accounts();
+      const accounts = await fuel.accounts();
       setAccounts(accounts);
     }
-    if (FuelWeb3) getAccounts();
-  }, [FuelWeb3]);
+    if (fuel) getAccounts();
+  }, [fuel]);
 
   const [contract, wallet] = useMemo(() => {
-    if (FuelWeb3 && accounts[0]) {
-      const wallet = new WalletLocked(accounts[0], FuelWeb3.getProvider());
+    if (fuel && accounts[0]) {
+      const wallet = new WalletLocked(accounts[0], fuel.getProvider());
       // Connects out Contract instance to the deployed contract
       // address using the given wallet.
       const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
@@ -43,7 +43,7 @@ export default function App() {
       return [contract, wallet];
     }
     return [null, null];
-  }, [FuelWeb3, accounts, isConnected]);
+  }, [fuel, accounts, isConnected]);
 
   //-----------------------------------------------//
   //state variables to capture the selection of an existing event to RSVP to
@@ -308,8 +308,8 @@ export default function App() {
                       type="number"
                       name="event-name"
                       id="event-name"
-                      value={newEventName}
-                      onChange={(e) => setNewEventName(e.target.value)}
+                      value={eventId}
+                      onChange={(e) => setEventId(e.target.value)}
                       placeholder="Enter event name"
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                     />
