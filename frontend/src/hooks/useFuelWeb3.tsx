@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
-import { FuelWeb3SDK } from '@fuel-wallet/sdk';
+import { Fuel } from '@fuel-wallet/sdk';
 import { Provider } from 'fuels';
 
-export type fuel = FuelWeb3SDK & {
+export type fuel = Fuel & {
   getProvider: () => Provider
 };
 
