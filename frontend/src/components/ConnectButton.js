@@ -1,11 +1,11 @@
-import { useFuelWeb3 } from "../hooks/useFuelWeb3";
+import { useFuel } from "../hooks/useFuelWeb3";
 
 export function ConnectRequest() {
- const [FuelWeb3] = useFuelWeb3();
+ const [fuel] = useFuel();
 
  return (
     <div>
-        <button onClick={() => FuelWeb3.connect()}>Connect</button>
+        <button onClick={() => fuel.connect()}>Connect</button>
     </div>
  )
 }

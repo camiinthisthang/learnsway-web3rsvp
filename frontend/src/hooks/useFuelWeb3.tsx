@@ -1,34 +1,34 @@
 import { useState, useEffect } from 'react';
-import { FuelWeb3SDK } from '@fuel-wallet/sdk';
+import { Fuel } from '@fuel-wallet/sdk';
 import { Provider } from 'fuels';
 
-export type FuelWeb3 = FuelWeb3SDK & {
+export type fuel = Fuel & {
   getProvider: () => Provider
 };
 
 const globalWindow: Window & {
-    FuelWeb3: FuelWeb3;
+  fuel: fuel;
 } = typeof window !== 'undefined' ? window as any : ({} as any);
 
 // install FuelWeb3 and import as a package
-export function useFuelWeb3() {
+export function useFuel() {
   const [error, setError] = useState('');
   const [isLoading, setLoading] = useState(true);
-  const [fuelWeb3, setFuelWeb3] = useState<FuelWeb3>(
-    globalWindow.FuelWeb3
+  const [fuel, setFuel] = useState<fuel>(
+    globalWindow.fuel
   );
 
   useEffect(() => {
     const timeout = setTimeout(() => {
-      if (globalWindow.FuelWeb3) {
-        setFuelWeb3(globalWindow.FuelWeb3);
+      if (globalWindow.fuel) {
+        setFuel(globalWindow.fuel);
       } else {
-        setError('FuelWeb3 not detected on the window!');
+        setError('fuel not detected on the window!');
       }
       setLoading(false);
     }, 500);
     return () => clearTimeout(timeout);
   }, []);
 
-  return [fuelWeb3, error, isLoading] as const;
+  return [fuel, error, isLoading] as const;
 }

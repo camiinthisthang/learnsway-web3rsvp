@@ -160,6 +160,12 @@ const _abi = {
         type: 7,
         typeArguments: null,
       },
+      attributes: [
+        {
+          name: "storage",
+          arguments: ["read", "write"],
+        },
+      ],
     },
     {
       inputs: [
@@ -175,6 +181,12 @@ const _abi = {
         type: 7,
         typeArguments: null,
       },
+      attributes: [
+        {
+          name: "storage",
+          arguments: ["read"],
+        },
+      ],
     },
     {
       inputs: [
@@ -190,6 +202,12 @@ const _abi = {
         type: 7,
         typeArguments: null,
       },
+      attributes: [
+        {
+          name: "storage",
+          arguments: ["read", "write"],
+        },
+      ],
     },
   ],
   loggedTypes: [
@@ -218,6 +236,8 @@ const _abi = {
       },
     },
   ],
+  messagesTypes: [],
+  configurables: [],
 };
 
 export class RsvpContractAbi__factory {

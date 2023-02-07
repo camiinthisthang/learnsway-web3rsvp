@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { useFuelWeb3 } from "./hooks/useFuelWeb3";
+import { useFuel } from "./hooks/useFuelWeb3";
 import { useIsConnected } from "./hooks/useIsConnected";
 import { ConnectRequest } from "./pages/ConnectRequest";
-import { Wallet, Provider, WalletLocked, bn } from "fuels";
+import { WalletLocked, bn } from "fuels";
+import { FuelWalletProvider } from "@fuel-wallet/sdk";
 import Layout from "./components/Layout";
 import DisplaySingleEvent from "./components/DisplaySingleEvent";
-// import "./App.css";
 
 // Import the contract factory -- you can find the name in index.ts.
 // You can also do command + space and the compiler will suggest the correct name.
@@ -13,29 +13,28 @@ import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
 // const CONTRACT_ID = "0x32f10d6f296fbd07e16f24867a11aab9d979ad95f54b223efc0d5532360ef5e4";
 const CONTRACT_ID =
-  "0x0a98320d39c03337401a4e46263972a9af6ce69ec2f35a5420b1bd35784c74b1";
-//the private key from createWallet.js
-const WALLET_SECRET =
-  "0x5ac6d72b42e6a558e50458956244185267976a0d602d8be50e3b60ade7e22b65";
-//this creates a locked wallet, one with a private key
+  "0x0314f13ea8a2f710de1317d0f50d7ec299e60dc8fe17c26de765766a39c8b04c";
 
 export default function App() {
   const isConnected = useIsConnected();
-  const [FuelWeb3] = useFuelWeb3();
+  const [fuel] = useFuel();
   const [loading, setLoading] = useState(false);
+  const [provider, setProvider] = useState<FuelWalletProvider>();
   const [accounts, setAccounts] = useState<Array<string>>([]);
 
   useEffect(() => {
     async function getAccounts() {
-      const accounts = await FuelWeb3.accounts();
+      const accounts = await fuel.accounts();
+      const prov = await fuel.getProvider();
       setAccounts(accounts);
+      setProvider(prov);
     }
-    if (FuelWeb3) getAccounts();
-  }, [FuelWeb3]);
+    if (fuel) getAccounts();
+  }, [fuel]);
 
   const [contract, wallet] = useMemo(() => {
-    if (FuelWeb3 && accounts[0]) {
-      const wallet = new WalletLocked(accounts[0], FuelWeb3.getProvider());
+    if (fuel && accounts[0]) {
+      const wallet = new WalletLocked(accounts[0], provider);
       // Connects out Contract instance to the deployed contract
       // address using the given wallet.
       const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
@@ -43,7 +42,7 @@ export default function App() {
       return [contract, wallet];
     }
     return [null, null];
-  }, [FuelWeb3, accounts, isConnected]);
+  }, [fuel, accounts, isConnected]);
 
   //-----------------------------------------------//
   //state variables to capture the selection of an existing event to RSVP to
@@ -54,7 +53,8 @@ export default function App() {
   const [numOfRSVPs, setNumOfRSVPs] = useState(0);
   const [eventId, setEventId] = useState("");
   const [eventDeposit, setEventDeposit] = useState(0);
-
+  //-----------------------------------------------//
+  //state variables to capture the creation of an event
   const [newEventName, setNewEventName] = useState("");
   const [newEventMax, setNewEventMax] = useState(0);
   const [newEventDeposit, setNewEventDeposit] = useState(0);
@@ -148,7 +148,6 @@ export default function App() {
       console.log("event capacity", value.max_capacity.toString());
       console.log("eventID", value.unique_id.toString());
       setNewEventID(value.unique_id.toString());
-      //setEventId(value.uniqueId.toString())
       setEventCreation(true);
       alert("Event created");
     } catch (err: any) {
@@ -160,46 +159,6 @@ export default function App() {
   return (
     <Layout address={walletAddress}>
       <div className="main">
-        {/* <div className="form">
-        <h2>Create Your Event Today!</h2>
-        <form id="createEventForm" onSubmit={createEvent}>
-          <label className="label">Event Name</label>
-          <input className="input" value = {newEventName} onChange={e => setNewEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
-          <label className="label">Max Cap</label>
-          <input className="input" value = {newEventMax} onChange={e => setNewEventMax(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
-          <label className="label">Deposit</label>
-          <input className="input" value = {newEventDeposit} onChange={e => setNewEventDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
-          <button className="button" disabled={loading}>
-            {loading ? "creating..." : "create"}
-          </button>
-        </form>
-      </div>
-      <div className="form rsvp">
-        <h2>RSVP to an Event</h2>
-        <label className="label">Event Id</label>
-        <input className="input" name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
-        <button className="button" onClick={rsvpToEvent}>RSVP</button>
-      </div>
-      <div className="results">
-        <div className="card">
-          {eventCreation &&
-          <>
-          <h1> New event created</h1>
-          <h2> Event Name: {newEventName} </h2>
-          <h2> Event ID: {newEventID}</h2>
-          <h2>Max capacity: {newEventMax}</h2>
-          <h2>Deposit: {newEventDeposit}</h2>
-          <h2>Num of RSVPs: {newEventRSVP}</h2>
-          </>
-          }
-        </div>
-          {rsvpConfirmed && <>
-          <div className="card">
-            <h1>RSVP Confirmed to the following event: {eventName}</h1>
-            <h2>Num of RSVPs: {numOfRSVPs}</h2>
-          </div>
-          </>}
-      </div> */}
         <form
           onSubmit={createEvent}
           className="space-y-8 divide-y divide-gray-200"
@@ -308,8 +267,8 @@ export default function App() {
                       type="number"
                       name="event-name"
                       id="event-name"
-                      value={newEventName}
-                      onChange={(e) => setNewEventName(e.target.value)}
+                      value={eventId}
+                      onChange={(e) => setEventId(e.target.value)}
                       placeholder="Enter event name"
                       className="block w-full max-w-lg rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:max-w-xs sm:text-sm"
                     />
