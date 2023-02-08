@@ -28,6 +28,64 @@ _Some resources that may be helpful:_
 - [Sway Book](https://fuellabs.github.io/sway/v0.19.2/)
 - [Fuel discord](discord.gg/fuelnetwork) - get help
 
+## Run this project locally
+
+In order to test out Web3RSVP locally, carry out the following steps:
+
+1. Clone this repository and move into the root folder `learnsway-web3rsvp`:
+
+```bash
+git clone https://github.com/camiinthisthang/learnsway-web3rsvp.git
+
+cd learnsway-web3rsvp
+```
+
+2. Move into the `rsvpContract` folder and compile the contact files:
+
+```bash
+cd rsvpContract
+
+forc build
+```
+
+3. Deploy the contract using the `forc deploy` command:
+
+```bash
+forc deploy --url https://node-beta-1.fuel.network/graphql --gas-price 1
+```
+
+> 💡 Note: Before you can carry out the next step, make sure you have the fuel wallet CLI installed and an active wallet account. Additionally, you will need test eth from the faucet to sign the transaction. You can get test tokens [here](https://faucet-beta-1.fuel.network/).
+
+4. Enter the wallet address when prompted.
+
+5. Copy the message to be signed. Let's assume that the message string is `X`. Run the following command in a separate terminal:
+
+```bash
+forc wallet sign `X` `wallet account index`
+```
+
+So for instance, if your wallet account index is 0, the above command should look something like:
+
+```bash
+forc wallet sign 16d7a8f9d15cfba1bd000d3f99cd4077dfa1fce2a6de83887afc3f739d6c84df 0
+```
+
+6. Paste the returned signature in the previous terminal. Voila! Your contract has now been successfully deployed.
+
+7. Move into the `frontend` folder to install dependencies and run the app locally:
+
+```bash
+cd frontend
+
+npm install
+
+npm start
+```
+
+Awesome! You can now test out the app and play around with it locally to understand what you be learning to implement and how it should look like in the end.
+
+Now, let's go ahead and get started with building the app yourself!
+
 ## Installation
 
 1. Install `cargo` using [`rustup`](https://www.rust-lang.org/tools/install)
