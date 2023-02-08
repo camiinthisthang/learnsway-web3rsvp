@@ -384,8 +384,79 @@ Now you should be able to find a new folder `learnsway-Web3RSVP/frontend/src/con
 
 For interacting with the Fuel network we have to submit signed transactions with enough funds to cover network fees.
 
+#### Write wallet hooks
+
+1. `useFuel`
+
+Create a file called `useFuel.tsx` in your `hooks` folder. Go ahead and add the code below to write your `useFuel` wallet hook:
+
+```javascript=
+import { useState, useEffect } from 'react';
+import { Fuel } from '@fuel-wallet/sdk';
+
+const globalWindow: Window & {
+    fuel: Fuel;
+} = typeof window !== 'undefined' ? window as any : ({} as any);
+
+export function useFuel() {
+  const [error, setError] = useState('');
+  const [isLoading, setLoading] = useState(true);
+  const [fuel, setFuel] = useState<Fuel>(
+    globalWindow.fuel
+  );
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (globalWindow.fuel) {
+        setFuel(globalWindow.fuel);
+      } else {
+        setError('Fuel Wallet not detected on the window!');
+      }
+      setLoading(false);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return [fuel, error, isLoading] as const;
+}
 ```
-insert wallet integration steps here
+
+2. `useIsConnected`
+
+Create another file called `useIsConnected.tsx` in your `hooks` folder and add the following code to define the `useIsConnected` wallet hook:
+
+```javascript=
+import { useEffect, useState } from 'react';
+
+import { useFuel } from './useFuel';
+
+export function useIsConnected() {
+  const [fuel] = useFuel();
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    async function main() {
+      try {
+        const accounts = await fuel.accounts();
+        setIsConnected(Boolean(accounts.length));
+      } catch (err) {
+        setIsConnected(false);
+      }
+    }
+
+    if (fuel) {
+      main();
+    }
+
+    fuel?.on('connection', main);
+    return () => {
+      fuel?.off('connection', main);
+    };
+  }, [fuel]);
+
+  return isConnected;
+}
+
 ```
 
 Now you're ready to build and ship ⛽
