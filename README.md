@@ -446,7 +446,7 @@ For interacting with the Fuel network we have to submit signed transactions with
 
 1. `useFuel`
 
-Create a file called `useFuel.tsx` in your `hooks` folder. Go ahead and add the code below to write your `useFuel` wallet hook:
+Create a file called `useFuelWeb3.tsx` in your `hooks` folder. Go ahead and add the code below to write your `useFuel` wallet hook:
 
 ```js
 import { useState, useEffect } from 'react';
@@ -524,7 +524,62 @@ Now you're ready to build and ship ⛽
 Inside the `frontend` folder let's add code that interacts with our contract.
 Read the comments to help you understand the App parts.
 
-Change the file `learnsway-Web3RSVP/frontend/src/App.tsx` to:
+1. Import the wallet hooks:
+
+```js
+import { useFuel } from "./hooks/useFuelWeb3";
+import { useIsConnected } from "./hooks/useIsConnected";
+import { FuelWalletProvider } from "@fuel-wallet/sdk";
+```
+
+2. Add the contract id of the Sway smart contract you have deployed in your `App.tsx` file
+
+```js
+const CONTRACT_ID = "your_contract_id"
+```
+
+3. Define `fuel` and `isConnected` using the wallet hooks you wrote earlier
+
+```js
+export default function App() {
+  const isConnected = useIsConnected();
+  const [fuel] = useFuel();
+}
+```
+
+4. Get `accounts` and `provider`
+
+```
+useEffect(() => {
+    async function getAccounts() {
+      const accounts = await fuel.accounts();
+      const prov = await fuel.getProvider();
+      setAccounts(accounts);
+      setProvider(prov);
+    }
+    if (fuel) getAccounts();
+  }, [fuel]);
+```
+
+5. Connect contract instance to the deployed contract  address using the given wallet
+
+```js
+const [contract, wallet] = useMemo(() => {
+    if (fuel && accounts[0]) {
+      const wallet = new WalletLocked(accounts[0], provider);
+      // Connects out Contract instance to the deployed contract
+      // address using the given wallet.
+      const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
+
+      return [contract, wallet];
+    }
+    return [null, null];
+  }, [fuel, accounts, isConnected]);
+```
+
+Awesome! Now that we've integrated the wallet, let's go ahead and write our functions for creating an event and then rsvping to it.
+
+Your `learnsway-Web3RSVP/frontend/src/App.tsx` file should look something like this:
 
 ```js
 import React, { useEffect, useState, useMemo } from "react";
