@@ -7,7 +7,7 @@ This dapp is a bare-bones architectural reference for an event creation and mana
 - Create a function in the smart contract to create a new event
 - Create a function in the smart contract to RSVP to an existing event
 
-<img width="1723" alt="Screen Shot 2022-11-14 at 5 30 07 PM" src="https://user-images.githubusercontent.com/15346823/201781695-e3530429-46ad-40ea-96d2-00d6e8f27ed5.png">
+<img width="941" alt="Screenshot 2023-02-08 at 7 33 34 PM" src="https://user-images.githubusercontent.com/32997409/217552100-0eedfe5b-f9ca-4a57-8cc5-a138e58b4ff1.png">
 
 Let's break down the tasks associated with each function:
 
@@ -54,7 +54,7 @@ forc build
 forc deploy --url https://node-beta-1.fuel.network/graphql --gas-price 1
 ```
 
-> 💡 Note: Before you can carry out the next step, make sure you have the fuel wallet CLI installed and an active wallet account. Additionally, you will need test eth from the faucet to sign the transaction. You can get test tokens [here](https://faucet-beta-1.fuel.network/).
+> 💡 Note: Before you can carry out the next step, make sure you have the fuel wallet CLI installed and an active wallet account. Additionally, you will need test eth from the faucet to sign the transaction. You can get test tokens [here](https://faucet-beta-2.fuel.network/).
 
 4. Enter the wallet address when prompted.
 
@@ -154,7 +154,7 @@ A script is runnable bytecode on the chain which can call contracts to perform s
 
 ## Create a new Fuel project
 
-**Start by creating a new, empty folder. We'll call it `Web3RSVP`.**
+**Start by creating a new, empty folder. We'll call it `learnsway-web3rsvp`.**
 
 ### Writing the Contract
 
@@ -171,8 +171,8 @@ To compile, use `forc build`, and to run tests use `forc test`
 Here is the project that `Forc` has initialized:
 
 ```console
-$ tree Web3RSVP
-eventPlatform
+$ tree learnsway-web3rsvp
+rsvpContract
 ├── Cargo.toml
 ├── Forc.toml
 ├── src
@@ -191,7 +191,7 @@ Here is what your project structure should look like now:
 Here is the project that `Forc` has initialized:
 
 ```console
-eventPlatform
+rsvpContract
 ├── Cargo.toml
 ├── Forc.toml
 ├── src
@@ -312,13 +312,13 @@ impl eventPlatform for Contract {
 
 ### Build the Contract
 
-From inside the `web3rsvp/eventPlatform` directory, run the following command to build your contract:
+From inside the `learnsway-web3rsvp/rsvpContract` directory, run the following command to build your contract:
 
 ```console
 $ forc build
   Compiled library "core".
   Compiled library "std".
-  Compiled contract "counter_contract".
+  Compiled contract "rsvpContract".
   Bytecode size is 224 bytes.
 ```
 
@@ -344,7 +344,7 @@ With your account address in hand, head to the [testnet faucet](https://faucet-b
 
 Now that you have a wallet, you can deploy with `forc deploy` and passing in the testnet endpoint like this:
 
-`forc deploy --url https://node-beta-1.fuel.network/graphql --gas-price 1`
+`forc deploy --url https://node-beta-2.fuel.network/graphql --gas-price 1`
 
 > **Note**
 > We set the gas price to 1. Without this flag, the gas price is 0 by default and the transaction will fail.
@@ -394,7 +394,7 @@ In the terminal, go back up one directory and initialize a react project using [
 ```console
 $ cd ..
 $ npx create-react-app frontend --template typescript
-Success! Created frontend at Fuel/Web3RSVP/frontend
+Success! Created frontend at learnsway-web3rsvp/frontend
 ```
 
 You should now have your outer folder, `learnsway-Web3RSVP`, with two folders inside: `frontend` and `rsvpContract`
@@ -708,7 +708,7 @@ To create a production build, use npm run build.
 
 #### ✨⛽✨ Congrats you have completed your first DApp on Fuel ✨⛽✨
 
-![Screen Shot 2022-10-06 at 10 08 26 AM](https://user-images.githubusercontent.com/15346823/194375753-4c5de0cd-eaf3-4ba7-8e25-efe8e082fa93.png)
+<img width="941" alt="Screenshot 2023-02-08 at 7 33 34 PM" src="https://user-images.githubusercontent.com/32997409/217552100-0eedfe5b-f9ca-4a57-8cc5-a138e58b4ff1.png">
 
 Tweet me [@camiinthisthang](https://twitter.com/camiinthisthang) and let me know you just built a dapp on Fuel, you might get invited to a private group of builders, be invited to the next Fuel dinner, get alpha on the project, or something 👀.
 
