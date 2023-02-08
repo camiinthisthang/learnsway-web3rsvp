@@ -390,7 +390,7 @@ For interacting with the Fuel network we have to submit signed transactions with
 
 Create a file called `useFuel.tsx` in your `hooks` folder. Go ahead and add the code below to write your `useFuel` wallet hook:
 
-```javascript=
+```js
 import { useState, useEffect } from 'react';
 import { Fuel } from '@fuel-wallet/sdk';
 
@@ -425,7 +425,7 @@ export function useFuel() {
 
 Create another file called `useIsConnected.tsx` in your `hooks` folder and add the following code to define the `useIsConnected` wallet hook:
 
-```javascript=
+```js
 import { useEffect, useState } from 'react';
 
 import { useFuel } from './useFuel';
@@ -548,6 +548,84 @@ export default function App() {
 
   if (!isConnected) {
     return <ConnectRequest />;
+  }
+  
+  async function rsvpToEvent() {
+    setLoading(true);
+    try {
+      console.log("RSVPing to event");
+      // Retrieve the current RSVP data
+      const { value: eventData } = await contract!.functions
+        .get_rsvp(eventId)
+        .get();
+      const requiredAmountToRSVP = eventData.deposit.toString();
+
+      console.log("deposit required to rsvp", requiredAmountToRSVP.toString());
+      setEventId(eventData.unique_id.toString());
+      setMaxCap(eventData.max_capacity.toNumber());
+      setEventName(eventData.name.toString());
+      setEventDeposit(eventData.deposit.toNumber());
+      console.log("event name", eventData.name);
+      console.log("event capacity", eventData.max_capacity.toString());
+      console.log("eventID", eventData.unique_id.toString());
+
+      // Create a transaction to RSVP to the event
+      const { value: eventRSVP, transactionId } = await contract!.functions
+        .rsvp(eventId)
+        .callParams({
+          forward: [requiredAmountToRSVP],
+          //variable outputs is when a transaction creates a new dynamic UTXO
+          //for each transaction you do, you'll need another variable output
+          //for now, you have to set it manually, but the TS team is working on an issue to set this automatically
+        })
+        .txParams({ gasPrice: 1, variableOutputs: 1 })
+        .call();
+
+      console.log(
+        "Transaction created",
+        transactionId,
+        `https://fuellabs.github.io/block-explorer-v2/transaction/${transactionId}`
+      );
+      console.log("# of RSVPs", eventRSVP.num_of_rsvps.toString());
+      setNumOfRSVPs(eventRSVP.num_of_rsvps.toNumber());
+      setRSVPConfirmed(true);
+      alert("rsvp successful");
+    } catch (err: any) {
+      console.error(err);
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function createEvent(e: any) {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      console.log("creating event");
+      const requiredDeposit = bn.parseUnits(newEventDeposit.toString());
+      console.log("requiredDeposit", requiredDeposit.toString());
+      const { value } = await contract!.functions
+        .create_event(newEventMax, requiredDeposit, newEventName)
+        .txParams({ gasPrice: 1 })
+        .call();
+
+      console.log("return of create event", value);
+      console.log(
+        "deposit value",
+        bn.parseUnits(newEventDeposit.toString()).toString()
+      );
+      console.log("event name", value.name);
+      console.log("event capacity", value.max_capacity.toString());
+      console.log("eventID", value.unique_id.toString());
+      setNewEventID(value.unique_id.toString());
+      setEventCreation(true);
+      alert("Event created");
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setLoading(false);
+    }
   }
 ```
 
