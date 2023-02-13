@@ -4,22 +4,17 @@ dep event_platform;
 use event_platform::*;
 
 use std::{
-   auth::{
-        AuthError,
-        msg_sender,
-    },
-    constants::BASE_ASSET_ID,
-    call_frames::msg_asset_id,
-    context::{
-        this_balance,
-        msg_amount,
-    },
-    contract_id::ContractId,
-    identity::Identity,
-    logging::log,
-    result::Result,
-    storage::StorageMap,
-    token::transfer,
+   auth::msg_sender,
+   constants::BASE_ASSET_ID,
+   call_frames::msg_asset_id,
+   context::{
+       this_balance,
+       msg_amount,
+   },
+   contract_id::ContractId,
+   logging::log,
+   result::Result,
+   token::transfer,
 };
 
 storage {
@@ -28,9 +23,9 @@ storage {
 }
 
 pub enum InvalidRSVPError {
-    IncorrectAssetId: (),
-    NotEnoughTokens: (),
-    InvalidEventID: (),
+    IncorrectAssetId: ContractId,
+    NotEnoughTokens: u64,
+    InvalidEventID: Identity,
 }
 
 impl eventPlatform for Contract {
@@ -48,27 +43,27 @@ impl eventPlatform for Contract {
 
         storage.events.insert(campaign_id, new_event);
         storage.event_id_counter += 1;
-        let mut selectedEvent = storage.events.get(storage.event_id_counter - 1);
-        return selectedEvent;
+        let mut selected_event: Option<Event> = storage.events.get(storage.event_id_counter - 1);
+        selected_event.unwrap_or(new_event)
     }
 
-    #[storage(read, write)]
+    #[storage(read, write, payable)]
     fn rsvp(event_id: u64) -> Event {
         let sender = msg_sender().unwrap();
         let asset_id = msg_asset_id();
         let amount = msg_amount();
 
      // get the event
-        let mut selected_event = storage.events.get(event_id);
+        let mut selected_event = storage.events.get(event_id).unwrap();
 
     // check to see if the eventId is greater than storage.event_id_counter, if
     // it is, revert
-        require(selected_event.unique_id < storage.event_id_counter, InvalidRSVPError::InvalidEventID);
+        require(selected_event.unique_id < storage.event_id_counter, InvalidRSVPError::InvalidEventID(sender));
         // log(0);
     // check to see if the asset_id and amounts are correct, etc, if they aren't revert
-        require(asset_id == BASE_ASSET_ID, InvalidRSVPError::IncorrectAssetId);
+        require(asset_id == BASE_ASSET_ID, InvalidRSVPError::IncorrectAssetId(asset_id));
         // log(1);
-        require(amount >= selected_event.deposit, InvalidRSVPError::NotEnoughTokens);
+        require(amount >= selected_event.deposit, InvalidRSVPError::NotEnoughTokens(amount));
         // log(2);
     //send the payout
         transfer(amount, asset_id, selected_event.owner);
@@ -83,7 +78,7 @@ impl eventPlatform for Contract {
 
     #[storage(read)]
     fn get_rsvp(event_id: u64) -> Event {
-        let selected_event = storage.events.get(event_id);
-        selected_event
+        let selected_event = storage.events.get(event_id).unwrap();
+        return selected_event;
     }
 }
