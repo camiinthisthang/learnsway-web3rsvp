@@ -4,22 +4,17 @@ dep event_platform;
 use event_platform::*;
 
 use std::{
-   auth::{
-        AuthError,
-        msg_sender,
-    },
-    constants::BASE_ASSET_ID,
-    call_frames::msg_asset_id,
-    context::{
-        this_balance,
-        msg_amount,
-    },
-    contract_id::ContractId,
-    identity::Identity,
-    logging::log,
-    result::Result,
-    storage::StorageMap,
-    token::transfer,
+   auth::msg_sender,
+   constants::BASE_ASSET_ID,
+   call_frames::msg_asset_id,
+   context::{
+       this_balance,
+       msg_amount,
+   },
+   contract_id::ContractId,
+   logging::log,
+   result::Result,
+   token::transfer,
 };
 
 storage {
@@ -52,7 +47,7 @@ impl eventPlatform for Contract {
         selected_event.unwrap_or(new_event)
     }
 
-    #[storage(read, write)]
+    #[storage(read, write, payable)]
     fn rsvp(event_id: u64) -> Event {
         let sender = msg_sender().unwrap();
         let asset_id = msg_asset_id();
