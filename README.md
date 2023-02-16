@@ -7,7 +7,7 @@ This dapp is a bare-bones architectural reference for an event creation and mana
 - Create a function in the smart contract to create a new event
 - Create a function in the smart contract to RSVP to an existing event
 
-<img width="1723" alt="Screen Shot 2022-11-14 at 5 30 07 PM" src="https://user-images.githubusercontent.com/15346823/201781695-e3530429-46ad-40ea-96d2-00d6e8f27ed5.png">
+<img width="941" alt="Screenshot 2023-02-08 at 7 33 34 PM" src="https://user-images.githubusercontent.com/32997409/217552100-0eedfe5b-f9ca-4a57-8cc5-a138e58b4ff1.png">
 
 Let's break down the tasks associated with each function:
 
@@ -27,6 +27,64 @@ _Some resources that may be helpful:_
 - [Fuel Book](https://fuellabs.github.io/fuel-docs/master/)
 - [Sway Book](https://fuellabs.github.io/sway/v0.19.2/)
 - [Fuel discord](discord.gg/fuelnetwork) - get help
+
+## Run this project locally
+
+In order to test out Web3RSVP locally, carry out the following steps:
+
+1. Clone this repository and move into the root folder `learnsway-web3rsvp`:
+
+```bash
+git clone https://github.com/camiinthisthang/learnsway-web3rsvp.git
+
+cd learnsway-web3rsvp
+```
+
+2. Move into the `rsvpContract` folder and compile the contact files:
+
+```bash
+cd rsvpContract
+
+forc build
+```
+
+3. Deploy the contract using the `forc deploy` command:
+
+```bash
+forc deploy --url https://node-beta-1.fuel.network/graphql --gas-price 1
+```
+
+> 💡 Note: Before you can carry out the next step, make sure you have the fuel wallet CLI installed and an active wallet account. Additionally, you will need test eth from the faucet to sign the transaction. You can get test tokens [here](https://faucet-beta-2.fuel.network/).
+
+4. Enter the wallet address when prompted.
+
+5. Copy the message to be signed. Let's assume that the message string is `X`. Run the following command in a separate terminal:
+
+```bash
+forc wallet sign `X` `wallet account index`
+```
+
+So for instance, if your wallet account index is 0, the above command should look something like:
+
+```bash
+forc wallet sign 16d7a8f9d15cfba1bd000d3f99cd4077dfa1fce2a6de83887afc3f739d6c84df 0
+```
+
+6. Paste the returned signature in the previous terminal. Voila! Your contract has now been successfully deployed.
+
+7. Move into the `frontend` folder to install dependencies and run the app locally:
+
+```bash
+cd frontend
+
+npm install
+
+npm start
+```
+
+Awesome! You can now test out the app and play around with it locally to understand what you be learning to implement and how it should look like in the end.
+
+Now, let's go ahead and get started with building the app yourself!
 
 ## Installation
 
@@ -96,7 +154,7 @@ A script is runnable bytecode on the chain which can call contracts to perform s
 
 ## Create a new Fuel project
 
-**Start by creating a new, empty folder. We'll call it `Web3RSVP`.**
+**Start by creating a new, empty folder. We'll call it `learnsway-web3rsvp`.**
 
 ### Writing the Contract
 
@@ -113,8 +171,8 @@ To compile, use `forc build`, and to run tests use `forc test`
 Here is the project that `Forc` has initialized:
 
 ```console
-$ tree Web3RSVP
-eventPlatform
+$ tree learnsway-web3rsvp
+rsvpContract
 ├── Cargo.toml
 ├── Forc.toml
 ├── src
@@ -133,7 +191,7 @@ Here is what your project structure should look like now:
 Here is the project that `Forc` has initialized:
 
 ```console
-eventPlatform
+rsvpContract
 ├── Cargo.toml
 ├── Forc.toml
 ├── src
@@ -254,13 +312,13 @@ impl eventPlatform for Contract {
 
 ### Build the Contract
 
-From inside the `web3rsvp/eventPlatform` directory, run the following command to build your contract:
+From inside the `learnsway-web3rsvp/rsvpContract` directory, run the following command to build your contract:
 
 ```console
 $ forc build
   Compiled library "core".
   Compiled library "std".
-  Compiled contract "counter_contract".
+  Compiled contract "rsvpContract".
   Bytecode size is 224 bytes.
 ```
 
@@ -286,7 +344,7 @@ With your account address in hand, head to the [testnet faucet](https://faucet-b
 
 Now that you have a wallet, you can deploy with `forc deploy` and passing in the testnet endpoint like this:
 
-`forc deploy --url https://node-beta-1.fuel.network/graphql --gas-price 1`
+`forc deploy --url https://node-beta-2.fuel.network/graphql --gas-price 1`
 
 > **Note**
 > We set the gas price to 1. Without this flag, the gas price is 0 by default and the transaction will fail.
@@ -336,26 +394,26 @@ In the terminal, go back up one directory and initialize a react project using [
 ```console
 $ cd ..
 $ npx create-react-app frontend --template typescript
-Success! Created frontend at Fuel/Web3RSVP/frontend
+Success! Created frontend at learnsway-web3rsvp/frontend
 ```
 
-You should now have your outer folder, `Web3RSVP`, with two folders inside: `frontend` and `rsvpContract`
+You should now have your outer folder, `learnsway-Web3RSVP`, with two folders inside: `frontend` and `rsvpContract`
 
 ![project folder structure](./images/quickstart-folder-structure.png)
 
 ### Install the `fuels` SDK dependencies
 
-On this step we need to install 3 dependencies for the project:
+In this step, you need to install 3 dependencies for the project:
 
-1. `fuels`: The umbrella package that includes all the main tools; `Wallet`, `Contracts`, `Providers` and more.
+1. `fuels`: The umbrella package that includes all the main tools; `Wallet`, `Contracts`, `Providers`, and more!
 2. `fuelchain`: Fuelchain is the ABI TypeScript generator.
-3. `typechain-target-fuels`: The Fuelchain Target is the specific interpreter for the [Fuel ABI Spec](https://github.com/FuelLabs/fuel-specs/blob/master/specs/protocol/abi.md).
+3. `typechain-target-fuels`: The Fuelchain Target is the specific interpreter for the [Fuel ABI Spec](https://fuellabs.github.io/fuel-specs/master/protocol/abi/index.html).
 
-> ABI stands for Application Binary Interface. ABI's inform the application the interface to interact with the VM, in other words, they provide info to the APP such as what methods a contract has, what params, types it expects, etc...
+> ABI stands for Application Binary Interface. The ABI of your smart contract informs the application of the interface to interact with the VM. In other words, it provides info to the app about the contract methods, params, expected types, etc.
 
 ### Install
 
-Move into the `frontend` folder, then install the dependencies:
+Move into the `frontend` folder, then install the dependencies as follows:
 
 ```console
 $ cd frontend
@@ -367,54 +425,97 @@ added 33 packages, and audited 1526 packages in 2s
 
 ### Generating contract types
 
-To make it easier to interact with our contract we use `fuelchain` to interpret the output ABI JSON from our contract. This JSON was created on the moment we executed the `forc build` to compile our Sway Contract into binary.
+To make it easier to interact with your contract, let's use `fuelchain` to interpret the output ABI JSON from your contract. This JSON was created at the moment you executed the `forc build` to compile your Sway Contract into binary.
 
-If you see the folder `Web3RSVP/rsvpContract/out` you will be able to see the ABI JSON there. If you want to learn more, read the [ABI Specs here](https://github.com/FuelLabs/fuel-specs/blob/master/specs/protocol/abi.md).
+If you see the folder `learnsway-Web3RSVP/rsvpContract/out`, you will be able to see the ABI JSON inside it. To learn more, read the [ABI Specs here](https://github.com/FuelLabs/fuel-specs/blob/master/specs/protocol/abi.md).
 
-Inside `Web3RSVP/frontend` run;
+Inside `learnsway-Web3RSVP/frontend` run;
 
 ```console
 $ npx fuelchain --target=fuels --out-dir=./src/contracts ../rsvpContract/out/debug/*-abi.json
 Successfully generated 4 typings!
 ```
 
-Now you should be able to find a new folder `Web3RSVP/frontend/src/contracts`. This folder was auto-generated by our `fuelchain` command, this files abstract the work we would need to do to create a contract instance, and generate a complete TypeScript interface to the Contract, making easy to develop.
+Now you should be able to find a new folder `learnsway-Web3RSVP/frontend/src/contracts`. This folder was auto-generated by the `fuelchain` command you executed. These files abstract away the work you would need to do to create a contract instance and generate a complete TypeScript interface for the contract.
 
-### Create A Wallet (Again)
+### Integrating Fuel Wallet
 
-For interacting with the fuel network we have to submit signed transactions with enough funds to cover network fees. The Fuel TS SDK don't currently support Wallet integrations, requiring us to have a non-safe wallet inside the WebApp using a privateKey.
+For interacting with the Fuel network we have to submit signed transactions with enough funds to cover network fees.
 
-> **Note**
-> This should be done only for development purpose. Never expose a web app with a private key inside. The Fuel Wallet is in active development, follow the progress [here](https://github.com/FuelLabs/fuels-wallet).
->
-> **Note**
-> The team is working to simplify the process of creating a wallet, and eliminate the need to create a wallet twice. Keep an eye out for these updates.
+#### Write wallet hooks
 
-In the root of the frontend project create a file, createWallet.js
+1. `useFuel`
+
+Create a file called `useFuelWeb3.tsx` in your `hooks` folder. Go ahead and add the code below to write your `useFuel` wallet hook:
 
 ```js
-const { Wallet } = require("fuels");
+import { useState, useEffect } from 'react';
+import { Fuel } from '@fuel-wallet/sdk';
 
-const wallet = Wallet.generate();
+const globalWindow: Window & {
+    fuel: Fuel;
+} = typeof window !== 'undefined' ? window as any : ({} as any);
 
-console.log("address", wallet.address.toString());
-console.log("private key", wallet.privateKey);
+export function useFuel() {
+  const [error, setError] = useState('');
+  const [isLoading, setLoading] = useState(true);
+  const [fuel, setFuel] = useState<Fuel>(
+    globalWindow.fuel
+  );
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      if (globalWindow.fuel) {
+        setFuel(globalWindow.fuel);
+      } else {
+        setError('Fuel Wallet not detected on the window!');
+      }
+      setLoading(false);
+    }, 500);
+    return () => clearTimeout(timeout);
+  }, []);
+
+  return [fuel, error, isLoading] as const;
+}
 ```
 
-In a terminal, run the following command:
+2. `useIsConnected`
 
-```console
-$ node createWallet.js
-address fuel160ek8t7fzz89wzl595yz0rjrgj3xezjp6pujxzt2chn70jrdylus5apcuq
-private key 0x719fb4da652f2bd4ad25ce04f4c2e491926605b40e5475a80551be68d57e0fcb
+Create another file called `useIsConnected.tsx` in your `hooks` folder and add the following code to define the `useIsConnected` wallet hook:
+
+```js
+import { useEffect, useState } from 'react';
+
+import { useFuel } from './useFuel';
+
+export function useIsConnected() {
+  const [fuel] = useFuel();
+  const [isConnected, setIsConnected] = useState(false);
+
+  useEffect(() => {
+    async function main() {
+      try {
+        const accounts = await fuel.accounts();
+        setIsConnected(Boolean(accounts.length));
+      } catch (err) {
+        setIsConnected(false);
+      }
+    }
+
+    if (fuel) {
+      main();
+    }
+
+    fuel?.on('connection', main);
+    return () => {
+      fuel?.off('connection', main);
+    };
+  }, [fuel]);
+
+  return isConnected;
+}
+
 ```
-
-> **Note**
-> You should use the generated address and private key.
-
-Save the generated address and private key. You will need the private key later to set it as a string value for a variable `WALLET_SECRET` in your `App.tsx` file. More on that below.
-
-First, take the address of your wallet and use it to get some coins from [the testnet faucet](https://faucet-beta-1.fuel.network/).
 
 Now you're ready to build and ship ⛽
 
@@ -423,165 +524,222 @@ Now you're ready to build and ship ⛽
 Inside the `frontend` folder let's add code that interacts with our contract.
 Read the comments to help you understand the App parts.
 
-Change the file `Web3RSVP/frontend/src/App.tsx` to:
+1. Import the wallet hooks:
 
 ```js
-import React, { useEffect, useState } from "react";
-import { Wallet } from "fuels";
-import "./App.css";
+import { useFuel } from "./hooks/useFuelWeb3";
+import { useIsConnected } from "./hooks/useIsConnected";
+import { FuelWalletProvider } from "@fuel-wallet/sdk";
+```
+
+2. Add the contract id of the Sway smart contract you have deployed in your `App.tsx` file
+
+```js
+const CONTRACT_ID = "your_contract_id"
+```
+
+3. Define `fuel` and `isConnected` using the wallet hooks you wrote earlier
+
+```js
+export default function App() {
+  const isConnected = useIsConnected();
+  const [fuel] = useFuel();
+}
+```
+
+4. Get `accounts` and `provider`
+
+```
+useEffect(() => {
+    async function getAccounts() {
+      const accounts = await fuel.accounts();
+      const prov = await fuel.getProvider();
+      setAccounts(accounts);
+      setProvider(prov);
+    }
+    if (fuel) getAccounts();
+  }, [fuel]);
+```
+
+5. Connect contract instance to the deployed contract  address using the given wallet
+
+```js
+const [contract, wallet] = useMemo(() => {
+    if (fuel && accounts[0]) {
+      const wallet = new WalletLocked(accounts[0], provider);
+      // Connects out Contract instance to the deployed contract
+      // address using the given wallet.
+      const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
+
+      return [contract, wallet];
+    }
+    return [null, null];
+  }, [fuel, accounts, isConnected]);
+```
+
+Awesome! Now that we've integrated the wallet, let's go ahead and write our functions for creating an event and then rsvping to it.
+
+Your `learnsway-Web3RSVP/frontend/src/App.tsx` file should look something like this:
+
+```js
+import React, { useEffect, useState, useMemo } from "react";
+import { useFuel } from "./hooks/useFuelWeb3";
+import { useIsConnected } from "./hooks/useIsConnected";
+import { ConnectRequest } from "./pages/ConnectRequest";
+import { WalletLocked, bn } from "fuels";
+import { FuelWalletProvider } from "@fuel-wallet/sdk";
+import Layout from "./components/Layout";
+import DisplaySingleEvent from "./components/DisplaySingleEvent";
+
 // Import the contract factory -- you can find the name in index.ts.
 // You can also do command + space and the compiler will suggest the correct name.
 import { RsvpContractAbi__factory } from "./contracts";
 // The address of the contract deployed the Fuel testnet
 // const CONTRACT_ID = "0x32f10d6f296fbd07e16f24867a11aab9d979ad95f54b223efc0d5532360ef5e4";
-const CONTRACT_ID = "<YOUR-CONTRACT-ADDRESS-HERE>";
-//the private key from createWallet.js
-const WALLET_SECRET = "<YOU-PRIVATE-KEY-HERE>"
-// Create a Wallet from given secretKey in this case
-// The one we configured at the chainConfig.json
-const wallet = new Wallet(WALLET_SECRET, "https://node-beta-1.fuel.network/graphql");
-// Connects out Contract instance to the deployed contract
-// address using the given wallet.
-const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
+const CONTRACT_ID =
+  "0x0314f13ea8a2f710de1317d0f50d7ec299e60dc8fe17c26de765766a39c8b04c";
 
-export default function App(){
+export default function App() {
+  const isConnected = useIsConnected();
+  const [fuel] = useFuel();
   const [loading, setLoading] = useState(false);
+  const [provider, setProvider] = useState<FuelWalletProvider>();
+  const [accounts, setAccounts] = useState<Array<string>>([]);
+
+  useEffect(() => {
+    async function getAccounts() {
+      const accounts = await fuel.accounts();
+      const prov = await fuel.getProvider();
+      setAccounts(accounts);
+      setProvider(prov);
+    }
+    if (fuel) getAccounts();
+  }, [fuel]);
+
+  const [contract, wallet] = useMemo(() => {
+    if (fuel && accounts[0]) {
+      const wallet = new WalletLocked(accounts[0], provider);
+      // Connects out Contract instance to the deployed contract
+      // address using the given wallet.
+      const contract = RsvpContractAbi__factory.connect(CONTRACT_ID, wallet);
+
+      return [contract, wallet];
+    }
+    return [null, null];
+  }, [fuel, accounts, isConnected]);
+
   //-----------------------------------------------//
   //state variables to capture the selection of an existing event to RSVP to
-  const [eventName, setEventName] = useState('');
+  const [eventName, setEventName] = useState("");
   const [maxCap, setMaxCap] = useState(0);
-  const [deposit, setDeposit] = useState(0);
   const [eventCreation, setEventCreation] = useState(false);
   const [rsvpConfirmed, setRSVPConfirmed] = useState(false);
   const [numOfRSVPs, setNumOfRSVPs] = useState(0);
-  const [eventId, setEventId] = useState('');
-  //-------------------------------------------------//
+  const [eventId, setEventId] = useState("");
+  const [eventDeposit, setEventDeposit] = useState(0);
+  //-----------------------------------------------//
   //state variables to capture the creation of an event
-  const [newEventName, setNewEventName] = useState('');
+  const [newEventName, setNewEventName] = useState("");
   const [newEventMax, setNewEventMax] = useState(0);
   const [newEventDeposit, setNewEventDeposit] = useState(0);
-  const [newEventID, setNewEventID] = useState('')
+  const [newEventID, setNewEventID] = useState("");
   const [newEventRSVP, setNewEventRSVP] = useState(0);
+  const [walletAddress, setWalletAddress] = useState("");
 
   useEffect(() => {
-    console.log('Wallet address', wallet.address.toString());
-    wallet.getBalances().then(balances => {
-      const balancesFormatted = balances.map(balance => {
-        return [balance.assetId, balance.amount.format()];
+    if (wallet) {
+      console.log("Wallet address", wallet.address.toString());
+      setWalletAddress(wallet.address.toString());
+      wallet.getBalances().then((balances) => {
+        const balancesFormatted = balances.map((balance) => {
+          return [balance.assetId, balance.amount.format()];
+        });
+        console.log("Wallet balances", balancesFormatted);
       });
-      console.log('Wallet balances', balancesFormatted);
-    });
-  }, []);
+    }
+  }, [wallet]);
 
-  useEffect(() => {
-    console.log("eventName", eventName);
-    console.log("deposit", deposit);
-    console.log("max cap", maxCap);
-  },[eventName, maxCap, deposit]);
-
-  async function rsvpToEvent(){
+  if (!isConnected) {
+    return <ConnectRequest />;
+  }
+  
+  async function rsvpToEvent() {
     setLoading(true);
     try {
-      console.log('amount deposit', deposit);
-      const { value, transactionResponse, transactionResult } = await contract.functions.rsvp(eventId).callParams({
-        forward: [deposit]
-        //variable outputs is when a transaction creates a new dynamic UTXO
-        //for each transaction you do, you'll need another variable output
-        //for now, you have to set it manually, but the TS team is working on an issue to set this automatically
-      }).txParams({gasPrice: 1, variableOutputs: 1}).call();
-      console.log(transactionResult);
-      console.log(transactionResponse);
-      console.log("RSVP'd to the following event", value);
-      console.log("deposit value", value.deposit.toString());
-      console.log("# of RSVPs", value.num_of_rsvps.toString());
-      setNumOfRSVPs(value.num_of_rsvps.toNumber());
-      setEventName(value.name.toString());
-      setEventId(value.unique_id.toString());
-      setMaxCap(value.max_capacity.toNumber());
-      setDeposit(value.deposit.toNumber());
-      //value.deposit.format()
-      console.log("event name", value.name);
-      console.log("event capacity", value.max_capacity.toString());
-      console.log("eventID", value.unique_id.toString())
+      console.log("RSVPing to event");
+      // Retrieve the current RSVP data
+      const { value: eventData } = await contract!.functions
+        .get_rsvp(eventId)
+        .get();
+      const requiredAmountToRSVP = eventData.deposit.toString();
+
+      console.log("deposit required to rsvp", requiredAmountToRSVP.toString());
+      setEventId(eventData.unique_id.toString());
+      setMaxCap(eventData.max_capacity.toNumber());
+      setEventName(eventData.name.toString());
+      setEventDeposit(eventData.deposit.toNumber());
+      console.log("event name", eventData.name);
+      console.log("event capacity", eventData.max_capacity.toString());
+      console.log("eventID", eventData.unique_id.toString());
+
+      // Create a transaction to RSVP to the event
+      const { value: eventRSVP, transactionId } = await contract!.functions
+        .rsvp(eventId)
+        .callParams({
+          forward: [requiredAmountToRSVP],
+          //variable outputs is when a transaction creates a new dynamic UTXO
+          //for each transaction you do, you'll need another variable output
+          //for now, you have to set it manually, but the TS team is working on an issue to set this automatically
+        })
+        .txParams({ gasPrice: 1, variableOutputs: 1 })
+        .call();
+
+      console.log(
+        "Transaction created",
+        transactionId,
+        `https://fuellabs.github.io/block-explorer-v2/transaction/${transactionId}`
+      );
+      console.log("# of RSVPs", eventRSVP.num_of_rsvps.toString());
+      setNumOfRSVPs(eventRSVP.num_of_rsvps.toNumber());
       setRSVPConfirmed(true);
-      alert("rsvp successful")
+      alert("rsvp successful");
     } catch (err: any) {
       console.error(err);
       alert(err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
-  async function createEvent(e: any){
+  async function createEvent(e: any) {
     e.preventDefault();
     setLoading(true);
     try {
-      console.log("creating event")
-      const { value } = await contract.functions.create_event(newEventMax, newEventDeposit, newEventName).txParams({gasPrice: 1}).call();
+      console.log("creating event");
+      const requiredDeposit = bn.parseUnits(newEventDeposit.toString());
+      console.log("requiredDeposit", requiredDeposit.toString());
+      const { value } = await contract!.functions
+        .create_event(newEventMax, requiredDeposit, newEventName)
+        .txParams({ gasPrice: 1 })
+        .call();
 
       console.log("return of create event", value);
-      console.log("deposit value", value.deposit.toString());
+      console.log(
+        "deposit value",
+        bn.parseUnits(newEventDeposit.toString()).toString()
+      );
       console.log("event name", value.name);
       console.log("event capacity", value.max_capacity.toString());
-      console.log("eventID", value.unique_id.toString())
-      setNewEventID(value.unique_id.toString())
-      //setEventId(value.uniqueId.toString())
+      console.log("eventID", value.unique_id.toString());
+      setNewEventID(value.unique_id.toString());
       setEventCreation(true);
-      alert('Event created');
+      alert("Event created");
     } catch (err: any) {
-      alert(err.message)
+      alert(err.message);
     } finally {
       setLoading(false);
     }
   }
-return (
-  <div className="main">
-    <div className="header">Building on Fuel with Sway - Web3RSVP</div>
-      <div className="form">
-        <h2>Create Your Event Today!</h2>
-        <form id="createEventForm" onSubmit={createEvent}>
-          <label className="label">Event Name</label>
-          <input className="input" value = {newEventName} onChange={e => setNewEventName(e.target.value) }name="eventName" type="text" placeholder="Enter event name" />
-          <label className="label">Max Cap</label>
-          <input className="input" value = {newEventMax} onChange={e => setNewEventMax(+e.target.value)} name="maxCapacity" type="text" placeholder="Enter max capacity" />
-          <label className="label">Deposit</label>
-          <input className="input" value = {newEventDeposit} onChange={e => setNewEventDeposit(+e.target.value)} name="price" type="number" placeholder="Enter price" />
-          <button className="button" disabled={loading}>
-            {loading ? "creating..." : "create"}
-          </button>
-        </form>
-      </div>
-      <div className="form">
-        <h2>RSVP to an Event</h2>
-        <label className="label">Event Id</label>
-        <input className="input" name="eventId" onChange={e => setEventId(e.target.value)} placeholder="pass in the eventID"/>
-        <button className="button" onClick={rsvpToEvent}>RSVP</button>
-      </div>
-      <div className="results">
-        <div className="card">
-          {eventCreation &&
-          <>
-          <h1> New event created</h1>
-          <h2> Event Name: {newEventName} </h2>
-          <h2> Event ID: {newEventID}</h2>
-          <h2>Max capacity: {newEventMax}</h2>
-          <h2>Deposit: {newEventDeposit}</h2>
-          <h2>Num of RSVPs: {newEventRSVP}</h2>
-          </>
-          }
-        </div>
-          {rsvpConfirmed && <>
-          <div className="card">
-            <h1>RSVP Confirmed to the following event: {eventName}</h1>
-            <p>Num of RSVPs: {numOfRSVPs}</p>
-          </div>
-          </>}
-      </div>
-  </div>
-
-);
-}
 ```
 
 ### Run your project
@@ -605,11 +763,11 @@ To create a production build, use npm run build.
 
 #### ✨⛽✨ Congrats you have completed your first DApp on Fuel ✨⛽✨
 
-![Screen Shot 2022-10-06 at 10 08 26 AM](https://user-images.githubusercontent.com/15346823/194375753-4c5de0cd-eaf3-4ba7-8e25-efe8e082fa93.png)
+<img width="941" alt="Screenshot 2023-02-08 at 7 33 34 PM" src="https://user-images.githubusercontent.com/32997409/217552100-0eedfe5b-f9ca-4a57-8cc5-a138e58b4ff1.png">
 
 Tweet me [@camiinthisthang](https://twitter.com/camiinthisthang) and let me know you just built a dapp on Fuel, you might get invited to a private group of builders, be invited to the next Fuel dinner, get alpha on the project, or something 👀.
 
-> Note: To push this project up to a github repo, you'll have to remove the `.git` file that automatically gets created with `create-react-app`. You can do that by running the following command in `Web3RSVP/frontend`: `Rm -rf .git`. Then, you'll be good to add, commit, and push these files.
+> Note: To push this project up to a github repo, you'll have to remove the `.git` file that automatically gets created with `create-react-app`. You can do that by running the following command in `learnsway-Web3RSVP/frontend`: `Rm -rf .git`. Then, you'll be good to add, commit, and push these files.
 
 ### Updating The Contract
 
