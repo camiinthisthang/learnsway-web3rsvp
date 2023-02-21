@@ -51,23 +51,23 @@ forc build
 3. Deploy the contract using the `forc deploy` command:
 
 ```bash
-forc deploy --url https://node-beta-1.fuel.network/graphql --gas-price 1
+forc deploy --node-url https://node-beta-3.fuel.network/graphql --gas-price 1
 ```
 
 > 💡 Note: Before you can carry out the next step, make sure you have the fuel wallet CLI installed and an active wallet account. Additionally, you will need test eth from the faucet to sign the transaction. You can get test tokens [here](https://faucet-beta-2.fuel.network/).
 
 4. Enter the wallet address when prompted.
 
-5. Copy the message to be signed. Let's assume that the message string is `X`. Run the following command in a separate terminal:
+5. Copy the message to be signed. Run the following command in a separate terminal:
 
 ```bash
-forc wallet sign `X` `wallet account index`
+forc wallet sign --account `account index` tx-id `message to sign`
 ```
 
 So for instance, if your wallet account index is 0, the above command should look something like:
 
 ```bash
-forc wallet sign 16d7a8f9d15cfba1bd000d3f99cd4077dfa1fce2a6de83887afc3f739d6c84df 0
+forc wallet sign --account 0 tx-id 16d7a8f9d15cfba1bd000d3f99cd4077dfa1fce2a6de83887afc3f739d6c84df
 ```
 
 6. Paste the returned signature in the previous terminal. Voila! Your contract has now been successfully deployed.
@@ -100,7 +100,7 @@ Now, let's go ahead and get started with building the app yourself!
 
    ```bash
    $ cargo --version
-   cargo 1.62.0
+   cargo 1.67.1
    ```
 
 3. Install `forc` using [`fuelup`](https://fuellabs.github.io/sway/v0.18.1/introduction/installation.html#installing-from-pre-compiled-binaries)
@@ -116,7 +116,7 @@ Now, let's go ahead and get started with building the app yourself!
 
    ```bash
    $ forc --version
-   forc 0.26.0
+   forc 0.35.2
    ```
 
 ### Editor
@@ -344,10 +344,11 @@ With your account address in hand, head to the [testnet faucet](https://faucet-b
 
 Now that you have a wallet, you can deploy with `forc deploy` and passing in the testnet endpoint like this:
 
-`forc deploy --url https://node-beta-2.fuel.network/graphql --gas-price 1`
+`forc deploy --random-salt --node-url https://node-beta-3.fuel.network/graphql --gas-price 1`
 
 > **Note**
 > We set the gas price to 1. Without this flag, the gas price is 0 by default and the transaction will fail.
+> Additionally, the `--random-salt` flag programmatically adds a randomised Salt to your contractID. This is useful during multiple deployments of the same contract. You can also pass a Salt manually with the forc deploy command using the `--salt` flag
 
 The terminal will ask for the address of the wallet you want to sign this transaction with, paste in the address you saved earlier, it looks like this: `fuel1efz7lf36w9da9jekqzyuzqsfrqrlzwtt3j3clvemm6eru8fe9nvqj5kar8`
 
@@ -358,13 +359,13 @@ The terminal will output a `transaction id to sign` and prompt you for a signatu
 Grab the `transaction id` from your other terminal and sign with a specified account by running the following command:
 
 ```console
-forc wallet sign` + `[transaction id here, without brackets]` + `[the account number, without brackets]`
+forc wallet sign --account `account index` tx-id `message to sign`
 ```
 
 Your command should look like this:
 
 ```console
-$ forc wallet sign 16d7a8f9d15cfba1bd000d3f99cd4077dfa1fce2a6de83887afc3f739d6c84df 0
+$ forc wallet sign --account 0 tx-id 16d7a8f9d15cfba1bd000d3f99cd4077dfa1fce2a6de83887afc3f739d6c84df
 Please enter your password to decrypt initialized wallet's phrases:
 Signature: 736dec3e92711da9f52bed7ad4e51e3ec1c9390f4b05caf10743229295ffd5c1c08a4ca477afa85909173af3feeda7c607af5109ef6eb72b6b40b3484db2332c
 ```
@@ -774,7 +775,7 @@ Tweet me [@camiinthisthang](https://twitter.com/camiinthisthang) and let me know
 If you make changes to your contract, here are the steps you should take to get your frontend and contract back in sync:
 
 - In your contract directory, run `forc build`
-- In your contract directory, redeploy the contract by running this command and following the same steps as above to sign the transaction with your wallet: `forc deploy --url https://node-beta-1.fuel.network/graphql --gas-price 1`
+- In your contract directory, redeploy the contract by running this command and following the same steps as above to sign the transaction with your wallet: `forc deploy --random-salt --node-url https://node-beta-3.fuel.network/graphql --gas-price 1`
 - In your frontend directory, re-run this command: `npx fuelchain --target=fuels --out-dir=./src/contracts ../rsvpContract/out/debug/*-abi.json`
 - In your frontend directory, update the contract ID in your `App.tsx` file
 
