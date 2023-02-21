@@ -47,7 +47,7 @@ impl eventPlatform for Contract {
         selected_event.unwrap_or(new_event)
     }
 
-    #[storage(read, write, payable)]
+    #[storage(read, write), payable]
     fn rsvp(event_id: u64) -> Event {
         let sender = msg_sender().unwrap();
         let asset_id = msg_asset_id();
