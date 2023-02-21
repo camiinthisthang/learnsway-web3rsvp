@@ -6,7 +6,7 @@ abi eventPlatform {
     #[storage(read, write)]
     fn create_event(max_capacity: u64, deposit: u64, event_name: str[10]) -> Event;
 
-    #[storage(read, write, payable)]
+    #[storage(read, write), payable]
     fn rsvp(event_id: u64) -> Event;
 
     #[storage(read)]
